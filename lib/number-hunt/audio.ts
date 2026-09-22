@@ -9,13 +9,20 @@ function getAudioContext(): AudioContext | null {
 }
 
 export function cancelAudio(): void {
-  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+  if (
+    typeof window !== "undefined" &&
+    typeof window.speechSynthesis?.cancel === "function"
+  ) {
     window.speechSynthesis.cancel();
   }
 }
 
 export function canSpeak(): boolean {
-  return typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+  return (
+    typeof window !== "undefined" &&
+    typeof window.speechSynthesis?.speak === "function" &&
+    typeof window.SpeechSynthesisUtterance === "function"
+  );
 }
 
 export function speak(text: string, enabled: boolean, rate = 0.88): void {
