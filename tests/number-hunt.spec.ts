@@ -8,14 +8,16 @@ async function startLevelOne(page: Page) {
   const soundButton = page.getByRole("button", { name: "Turn sound off" });
   if (await soundButton.isVisible()) await soundButton.click();
   await page.getByRole("button", { name: "Start Level 1" }).click();
-  await expect(page.getByText("Question 1 of 10")).toBeVisible();
+  await expect(page.locator(".play-footer").getByText("Question 1 of 10", { exact: true })).toBeVisible();
 }
 
 async function answerCurrentCorrectly(page: Page, questionNumber: number) {
   const target = (await page.locator(".target-number").innerText()).trim();
   await page.getByRole("button", { name: new RegExp(`^Number ${target}(?:, hint)?$`) }).click();
   if (questionNumber < 10) {
-    await expect(page.getByText(`Question ${questionNumber + 1} of 10`)).toBeVisible({ timeout: 4_000 });
+    await expect(
+      page.locator(".play-footer").getByText(`Question ${questionNumber + 1} of 10`, { exact: true }),
+    ).toBeVisible({ timeout: 4_000 });
   }
 }
 
@@ -73,7 +75,7 @@ test("shows hints gently and ignores a rapid duplicate correct tap", async ({ pa
     element.click();
   });
 
-  await expect(page.getByText("Question 2 of 10")).toBeVisible({ timeout: 4_000 });
+  await expect(page.locator(".play-footer").getByText("Question 2 of 10", { exact: true })).toBeVisible({ timeout: 4_000 });
   const saved = await page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "{}"), STORAGE_KEY);
   expect(saved.totalQuestions).toBe(1);
   expect(saved.stars).toBe(1);
@@ -104,7 +106,7 @@ test("Level 10 renders eight choices and 320px layout has no horizontal overflow
   await page.setViewportSize({ width: 320, height: 700 });
   await page.goto("/");
   await page.getByRole("button", { name: "Turn sound off" }).click();
-  await page.getByRole("button", { name: "Level 10" }).click();
+  await page.getByRole("button", { name: "Level 10", exact: true }).click();
 
   await expect(page.locator(".number-card")).toHaveCount(8);
   await expect(page.locator(".target-number")).toBeVisible();
