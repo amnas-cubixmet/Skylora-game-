@@ -31,7 +31,7 @@ test("completes the full Level 1 flow and unlocks Level 2", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Level Complete!" })).toBeVisible({ timeout: 4_000 });
   await expect(page.getByText("10", { exact: true }).first()).toBeVisible();
   await page.getByRole("button", { name: "Home" }).click();
-  await expect(page.getByRole("button", { name: "Level 2" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Level 2", exact: true })).toBeEnabled();
 
   const saved = await page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "{}"), STORAGE_KEY);
   expect(saved.highestUnlockedLevel).toBeGreaterThanOrEqual(2);
