@@ -160,6 +160,8 @@ export function NumberHuntGame() {
   const questionStartedAtRef = useRef(0);
   const transitionTimerRef = useRef<number | null>(null);
   const speechTimerRef = useRef<number | null>(null);
+  const answerLockRef = useRef(false);
+  const lastTapRef = useRef<{ value: number; at: number } | null>(null);
 
   const commitProgress = (next: SavedProgress) => {
     progressRef.current = next;
@@ -230,6 +232,8 @@ export function NumberHuntGame() {
     try {
       clearTimers();
       cancelAudio();
+      answerLockRef.current = false;
+      lastTapRef.current = null;
       const config = getLevelConfig(level);
       const current = progressRef.current;
       const resumable = !forceRestart && current.activeLevel?.level === level ? current.activeLevel : null;
@@ -295,6 +299,16 @@ export function NumberHuntGame() {
   const handleAnswer = (value: number) => {
     if (!state.question) return;
     if (!["PLAYING", "TRY_AGAIN", "HINT"].includes(state.status)) return;
+    if (answerLockRef.current) return;
+
+    const tapNow = performance.now();
+    if (
+      lastTapRef.current?.value === value &&
+      tapNow - lastTapRef.current.at < 250
+    ) {
+      return;
+    }
+    lastTapRef.current = { value, at: tapNow };
 
     const target = state.question.target;
     emitGameEvent("answer_selected", {
@@ -336,6 +350,7 @@ export function NumberHuntGame() {
       return;
     }
 
+    answerLockRef.current = true;
     const responseTimeMs = Math.max(0, Math.round(performance.now() - questionStartedAtRef.current));
     const firstTry = state.attemptsForQuestion === 0;
     const completedStats: LevelSessionStats = {
@@ -389,6 +404,8 @@ export function NumberHuntGame() {
       try {
         const nextQuestion = generateQuestion(config, target, progressRef.current.confusedPairs);
         const nextRound = state.round + 1;
+        answerLockRef.current = false;
+        lastTapRef.current = null;
         dispatch({ type: "NEXT", round: nextRound, question: nextQuestion });
         questionStartedAtRef.current = performance.now();
         emitGameEvent("question_shown", { level: state.level, round: nextRound + 1, target: nextQuestion.target });
