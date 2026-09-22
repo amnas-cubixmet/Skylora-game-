@@ -1,3 +1,15 @@
+import type { Metadata } from "next";
 import "./globals.css";
-export const metadata={title:"SKYLORA Sound Quest",description:"Voice-powered phonics game for ages 1-6"};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
+
+export const metadata: Metadata = {
+  title: "SKYLORA Number Hunt",
+  description: "A gentle number-recognition learning game for children.",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
