@@ -188,13 +188,16 @@ export function NumberHuntGame() {
   };
 
   useEffect(() => {
-    const loaded = loadProgress();
-    progressRef.current = loaded.progress;
-    setProgress(loaded.progress);
-    setStorageAvailable(loaded.available);
-    dispatch({ type: "READY" });
+    const initTimer = window.setTimeout(() => {
+      const loaded = loadProgress();
+      progressRef.current = loaded.progress;
+      setProgress(loaded.progress);
+      setStorageAvailable(loaded.available);
+      dispatch({ type: "READY" });
+    }, 0);
 
     return () => {
+      window.clearTimeout(initTimer);
       if (transitionTimerRef.current !== null) window.clearTimeout(transitionTimerRef.current);
       if (speechTimerRef.current !== null) window.clearTimeout(speechTimerRef.current);
       cancelAudio();
