@@ -122,3 +122,100 @@ test("Level 10 renders eight choices and 320px layout has no horizontal overflow
   );
   expect(Math.min(...boxes)).toBeGreaterThanOrEqual(70);
 });
+
+
+test("stays responsive at 375px, 390px, and tablet widths", async ({ page }) => {
+  const viewports = [
+    { width: 375, height: 812 },
+    { width: 390, height: 844 },
+    { width: 768, height: 1024 },
+  ];
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await page.evaluate(() => window.localStorage.clear());
+    await page.reload();
+
+    await page.getByRole("button", { name: "Turn sound off" }).click();
+    await page.getByRole("button", { name: "Start Level 1" }).click();
+    await expect(page.locator(".target-number")).toBeVisible();
+    await expect(page.locator(".number-card")).toHaveCount(2);
+
+    const dimensions = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+    }));
+    expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
+
+    const cardHeights = await page.locator(".number-card").evaluateAll((elements) =>
+      elements.map((element) => element.getBoundingClientRect().height),
+    );
+    expect(Math.min(...cardHeights)).toBeGreaterThanOrEqual(70);
+  }
+});
+
+test("restart asks for confirmation and safely resets active level progress", async ({ page }) => {
+  await startLevelOne(page);
+  await answerCurrentCorrectly(page, 1);
+
+  await page.getByRole("button", { name: "Pause game" }).click();
+  await expect(page.getByRole("heading", { name: "Game paused" })).toBeVisible();
+  await page.getByRole("button", { name: "Restart Level" }).click();
+  await expect(page.getByRole("heading", { name: "Start this level again?" })).toBeVisible();
+  await page.getByRole("button", { name: "Yes, restart" }).click();
+
+  await expect(page.locator(".play-footer").getByText("Question 1 of 10", { exact: true })).toBeVisible();
+  const saved = await page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "{}"), STORAGE_KEY);
+  expect(saved.totalQuestions).toBe(0);
+  expect(saved.stars).toBe(0);
+  expect(saved.activeLevel.completedRounds).toBe(0);
+});
+
+test("remains playable when localStorage is unavailable", async ({ page }) => {
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  await page.addInitScript(() => {
+    const blocked = () => {
+      throw new DOMException("Storage blocked for test", "SecurityError");
+    };
+    Object.defineProperty(Storage.prototype, "getItem", { configurable: true, value: blocked });
+    Object.defineProperty(Storage.prototype, "setItem", { configurable: true, value: blocked });
+  });
+
+  await page.goto("/");
+  await expect(page.getByText(/blocking local storage/i)).toBeVisible();
+  await page.getByRole("button", { name: "Turn sound off" }).click();
+  await page.getByRole("button", { name: "Start Level 1" }).click();
+  await expect(page.locator(".target-number")).toBeVisible();
+  expect(pageErrors).toEqual([]);
+});
+
+test("remains playable when speech synthesis is unavailable", async ({ page }) => {
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  await page.addInitScript(() => {
+    Object.defineProperty(window, "speechSynthesis", {
+      configurable: true,
+      value: undefined,
+    });
+    Object.defineProperty(window, "SpeechSynthesisUtterance", {
+      configurable: true,
+      value: undefined,
+    });
+  });
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "Start Level 1" }).click();
+  await expect(page.locator(".target-number")).toBeVisible();
+  await page.getByRole("button", { name: "Repeat the number instruction" }).click();
+
+  const target = (await page.locator(".target-number").innerText()).trim();
+  await page.getByRole("button", { name: `Number ${target}` }).click();
+  await expect(page.locator(".play-footer").getByText("Question 2 of 10", { exact: true })).toBeVisible({
+    timeout: 4_000,
+  });
+  expect(pageErrors).toEqual([]);
+});
