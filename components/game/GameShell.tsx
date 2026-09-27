@@ -1,5 +1,8 @@
 "use client";
 
+import { gameStyles as ui } from "./styles";
+
+
 import type { ReactNode } from "react";
 
 type GameShellProps = {
@@ -12,16 +15,16 @@ type GameShellProps = {
 
 export function GameShell({ children, onPause, showPause = false, soundEnabled, onToggleSound }: GameShellProps) {
   return (
-    <main className="game-shell">
-      <header className="game-header">
-        <div className="brand-lockup" aria-label="SKYLORA Number Hunt">
-          <span className="brand-name">SKYLORA</span>
-          <span className="game-name">Number Hunt</span>
+    <main className={ui["game-shell"]}>
+      <header className={ui["game-header"]}>
+        <div className={ui["brand-lockup"]} aria-label="SKYLORA Number Hunt">
+          <span className={ui["brand-name"]}>SKYLORA</span>
+          <span className={ui["game-name"]}>Number Hunt</span>
         </div>
-        <div className="header-actions">
+        <div className={ui["header-actions"]}>
           {onToggleSound && typeof soundEnabled === "boolean" ? (
             <button
-              className="icon-button"
+              className={ui["icon-button"]}
               type="button"
               onClick={onToggleSound}
               aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
@@ -31,13 +34,13 @@ export function GameShell({ children, onPause, showPause = false, soundEnabled, 
             </button>
           ) : null}
           {showPause && onPause ? (
-            <button className="icon-button" type="button" onClick={onPause} aria-label="Pause game" title="Pause">
+            <button className={ui["icon-button"]} type="button" onClick={onPause} aria-label="Pause game" title="Pause">
               <span aria-hidden="true">Ⅱ</span>
             </button>
           ) : null}
         </div>
       </header>
-      <div className="game-stage">{children}</div>
+      <div className={ui["game-stage"]}>{children}</div>
     </main>
   );
 }

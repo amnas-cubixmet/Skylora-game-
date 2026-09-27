@@ -1,3 +1,5 @@
+import { gameStyles as ui } from "../game/styles";
+
 type NumberCardProps = {
   value: number;
   isTarget: boolean;
@@ -22,15 +24,15 @@ export function NumberCard({
 
   return (
     <button
-      className={`number-card ${showSuccess && isTarget ? "is-correct" : ""} ${isSelectedWrong ? "was-tried" : ""} ${hinted ? "is-hinted" : ""} ${deemphasized ? "is-deemphasized" : ""}`}
+      className={`${ui["number-card"]} ${showSuccess && isTarget ? "is-correct" : ""} ${isSelectedWrong ? "was-tried" : ""} ${hinted ? "is-hinted" : ""} ${deemphasized ? "is-deemphasized" : ""}`}
       type="button"
       onClick={() => onSelect(value)}
       disabled={disabled}
       aria-label={`Number ${value}${hinted ? ", hint" : ""}`}
     >
-      <span className="number-value">{value}</span>
-      {showSuccess && isTarget ? <span className="number-badge">Great!</span> : null}
-      {hinted ? <span className="hint-label">Look here</span> : null}
+      <span className={ui["number-value"]}>{value}</span>
+      {showSuccess && isTarget ? <span className={ui["number-badge"]}>Great!</span> : null}
+      {hinted ? <span className={ui["hint-label"]}>Look here</span> : null}
     </button>
   );
 }
