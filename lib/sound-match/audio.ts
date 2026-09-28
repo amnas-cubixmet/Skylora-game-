@@ -37,7 +37,7 @@ export class SoundAudioController {
       try { run(finish); } catch { finish(false); }
     });
   }
-  async play(parts: AudioPart[], enabled: boolean): Promise<boolean> {
+  async play(parts: AudioPart[], enabled: boolean, accent: 'en-IN' | 'en-GB' | 'en-US' = 'en-IN', mature = false): Promise<boolean> {
     this.stop(); const token = this.generation;
     if (!enabled) return false;
     let success = true;
@@ -54,7 +54,7 @@ export class SoundAudioController {
         if (this.media) { this.media.pause(); this.media.onended = null; this.media.onerror = null; this.media = null; }
       }
       if (token !== this.generation) return false;
-      if (!ok && this.deps.available()) ok = await this.bounded(finish => { void this.deps.speak(part.text, true).then(finish, () => finish(false)); });
+      if (!ok && this.deps.available()) ok = await this.bounded(finish => { void this.deps.speak(part.text, true, accent, { rate: mature ? 0.9 : 0.8, pitch: mature ? 1 : 1.08 }).then(finish, () => finish(false)); });
       success = success && ok;
     }
     return token === this.generation && success;

@@ -30,12 +30,19 @@ test('early sequence, pair practice and adaptive choices add support gradually',
  const next=confusionUpdate(p,'B','P');expect(next.difficultLetters.B).toBe(1);expect(next.confusionPairs['B:P']).toBe(1);
  const pair=generateRound(5,0,p,44);expect(pair.options).toHaveLength(2);expect(new Set(pair.options)).toEqual(new Set(['B','P']));
 });
-test('bad JSON and corrupted records recover; saved sessions resume safely',()=>{
- for(const value of [null,'bad','[]','{"version":8}','{"version":1,"session":{"level":99}}'])expect(parseProgress(value).version).toBe(1);
+test('bad JSON and corrupted records recover; v1 progress migrates and saved sessions resume safely',()=>{
+ for(const value of [null,'bad','[]','{"version":8}','{"version":1,"session":{"level":99}}'])expect(parseProgress(value).version).toBe(2);
+ const migrated=parseProgress(JSON.stringify({...freshProgress(),version:1,settings:{voice:false,sfx:true,autoContinue:false}}));expect(migrated.version).toBe(2);expect(migrated.settings.accent).toBe('en-IN');
  let s=reducer(initialState,{type:'LOAD',progress:freshProgress(),available:true});
  s=reducer(s,{type:'TUTORIAL'});s=reducer(s,{type:'TUTORIAL_DONE'});s=reducer(s,{type:'START',level:1,seed:13});s=reducer(s,{type:'INTRO_DONE'});
- const save=JSON.stringify(s.progress),loaded=parseProgress(save);expect(loaded.session?.question).toEqual(s.progress.session?.question);expect(loaded.highestUnlockedLevel).toBe(1);expect(STORAGE_KEY).toContain(':v1');
+ const save=JSON.stringify(s.progress),loaded=parseProgress(save);expect(loaded.session?.question).toEqual(s.progress.session?.question);expect(loaded.session?.roundReplays).toBe(0);expect(loaded.highestUnlockedLevel).toBe(1);expect(STORAGE_KEY).toContain(':v2');
  const broken=JSON.parse(save);broken.session.question.options=[broken.session.question.target,broken.session.question.target];expect(parseProgress(JSON.stringify(broken)).session).toBeNull();
+});
+test('skill observations separate independent success from replay and hint supported success',()=>{
+ let s=reducer(initialState,{type:'LOAD',progress:freshProgress(),available:true});s=reducer(s,{type:'START',level:1,seed:91});s=reducer(s,{type:'INTRO_DONE'});
+ const first=s.question!;s=reducer(s,{type:'SELECT',value:first.target,date:'2026-09-28'});const firstSkill=s.progress.skills[`${first.mode}:${first.target}`];expect(firstSkill.independentCorrect).toBe(1);expect(firstSkill.alpha).toBe(2);
+ s=reducer(s,{type:'NEXT'});s=reducer(s,{type:'INTRO_DONE'});const second=s.question!,secondKey=`${second.mode}:${second.target}`,secondBefore=s.progress.skills[secondKey]?.alpha??1;s=reducer(s,{type:'REPLAY'});s=reducer(s,{type:'SELECT',value:second.target,date:'2026-09-28'});const replaySkill=s.progress.skills[secondKey];expect(replaySkill.supportedCorrect).toBeGreaterThan(0);expect(replaySkill.alpha).toBeCloseTo(secondBefore+0.8);
+ s=reducer(s,{type:'NEXT'});s=reducer(s,{type:'INTRO_DONE'});const third=s.question!,thirdKey=`${third.mode}:${third.target}`,thirdBefore=s.progress.skills[thirdKey]?.alpha??1,wrongBefore=s.progress.skills[thirdKey]?.incorrectAttempts??0;s=reducer(s,{type:'HINT'});s=reducer(s,{type:'SELECT',value:third.options.find(x=>x!==third.target)!,date:'2026-09-28'});s=reducer(s,{type:'RETRY_READY'});s=reducer(s,{type:'SELECT',value:third.target,date:'2026-09-28'});const hintSkill=s.progress.skills[thirdKey];expect(hintSkill.supportedCorrect).toBeGreaterThan(0);expect(hintSkill.incorrectAttempts).toBe(wrongBefore+1);expect(hintSkill.alpha).toBeCloseTo(thirdBefore+0.25);
 });
 test('retry, hints, first-try metrics and level unlocking obey state transitions',()=>{
  let s=reducer(initialState,{type:'LOAD',progress:freshProgress(),available:true});s=reducer(s,{type:'START',level:1,seed:9});s=reducer(s,{type:'INTRO_DONE'});
@@ -57,11 +64,11 @@ test('session and full-game completion advance through all six levels',()=>{
  expect(p.totalRounds).toBe(60);expect(p.history).toHaveLength(6);
 });
 test('audio cancellation resolves old speech, failed clips fall back, and new prompts do not overlap',async()=>{
- let resolveSpeech:((ok:boolean)=>void)|undefined,cancels=0;const spoken:string[]=[];
+ let resolveSpeech:((ok:boolean)=>void)|undefined,cancels=0;const spoken:string[]=[],locales:string[]=[];
  type MediaStub={preload:string;src:string;onended:(()=>void)|null;onerror:((e:Event)=>void)|null;pause:()=>void;removeAttribute:(name:string)=>void;play:()=>Promise<void>};
  const media:MediaStub={preload:'',src:'',onended:null,onerror:null,pause(){},removeAttribute(name:string){if(name==='src')this.src='';},play(){this.onerror?.(new Event('error'));return Promise.resolve();}};
- const player=new SoundAudioController({speak:async text=>{spoken.push(text);if(text.includes('fallback'))return true;return new Promise<boolean>(resolve=>{resolveSpeech=resolve;});},cancel:()=>{cancels++;},available:()=>true,media:()=>media as unknown as HTMLAudioElement});
+ const player=new SoundAudioController({speak:async (text,_enabled,locale)=>{spoken.push(text);locales.push(locale??'');if(text.includes('fallback'))return true;return new Promise<boolean>(resolve=>{resolveSpeech=resolve;});},cancel:()=>{cancels++;},available:()=>true,media:()=>media as unknown as HTMLAudioElement});
  const pending=player.play([{text:'Old instruction'}],true);await Promise.resolve();player.stop();expect(await pending).toBe(false);expect(cancels).toBeGreaterThan(0);
- const failedClip=await player.play([{text:'A spoken fallback',src:'/missing.mp3'}],true);expect(failedClip).toBe(true);expect(spoken).toContain('A spoken fallback');
- const current=player.play([{text:'New instruction'}],true);await Promise.resolve();resolveSpeech?.(true);expect(await current).toBe(true);player.dispose();
+ const failedClip=await player.play([{text:'A spoken fallback',src:'/missing.mp3'}],true);expect(failedClip).toBe(true);expect(spoken).toContain('A spoken fallback');expect(locales.at(-1)).toBe('en-IN');
+ const current=player.play([{text:'New instruction'}],true,'en-US');await Promise.resolve();resolveSpeech?.(true);expect(await current).toBe(true);expect(locales.at(-1)).toBe('en-US');player.dispose();
 });
