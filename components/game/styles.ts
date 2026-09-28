@@ -2,7 +2,7 @@
 // Semantic markers provide stable state and test hooks; all styling uses utilities.
 // Complete strings keep responsive and state variants visible to Tailwind.
 export const gameStyles: Record<string, string> = {
-  "game-shell": "game-shell min-h-[100svh] overflow-x-hidden",
+  "game-shell": "game-shell min-h-screen min-h-svh min-h-dvh overflow-x-hidden",
   "game-header": "game-header min-h-[70px] flex items-center justify-between gap-[16px] p-[12px_clamp(16px,_4vw,_56px)] [border-bottom:1px_solid_rgba(103,_86,_199,_0.08)] bg-[rgba(255,_255,_255,_0.78)] [backdrop-filter:blur(18px)] relative z-[20] max-[560px]:min-h-[62px] max-[560px]:p-[9px_14px]",
   "brand-lockup": "brand-lockup flex flex-col leading-[1.1]",
   "brand-name": "brand-name text-primary text-[0.78rem] font-[900] tracking-[0.14em] max-[350px]:text-[0.7rem]",
@@ -38,7 +38,7 @@ export const gameStyles: Record<string, string> = {
   "summary-wide": "summary-wide [&.summary-wide]:items-start [&.summary-wide]:pt-[6px] [&.summary-wide]:[border-top:1px_solid_var(--border)]",
   "play-area": "play-area w-[min(880px,_100%)] m-auto rounded-[32px] p-[clamp(16px,_3vw,_30px)] bg-[rgba(255,_255,_255,_0.9)] [border:1px_solid_rgba(255,_255,_255,_0.92)] shadow-panel animate-[soft-enter_0.28s_ease-out] max-[560px]:rounded-[24px] max-[560px]:p-[14px]",
   "play-topline": "play-topline flex items-center justify-between gap-[12px]",
-  "play-footer": "play-footer flex items-center justify-between gap-[12px] mt-[16px] text-muted text-[0.75rem] font-[750] max-[560px]:mt-[12px] max-[560px]:text-[0.68rem] max-[350px]:[&_span:last-child]:hidden",
+  "play-footer": "play-footer flex items-center justify-between gap-[12px] mt-[16px] text-muted text-[0.75rem] font-[750] max-[560px]:hidden",
   "instruction-line": "instruction-line flex items-center gap-[12px] justify-center [&_p]:m-0 [&_p]:text-[clamp(1.05rem,_3vw,_1.3rem)] [&_p]:font-[900] max-[560px]:flex-wrap max-[350px]:[&_p]:text-[1rem]",
   "progress-dots": "progress-dots m-[18px_auto_12px] grid grid-cols-[repeat(10,_minmax(10px,_1fr))] gap-[7px] max-w-[560px] max-[560px]:m-[14px_auto_8px] max-[560px]:gap-[5px]",
   "progress-dot": "progress-dot h-[9px] rounded-[999px] bg-[#ece8f4] [transition:transform_180ms_ease,_background_180ms_ease] [&.is-complete]:bg-[#b9dda9] [&.is-current]:bg-primary [&.is-current]:[transform:scaleY(1.35)]",
