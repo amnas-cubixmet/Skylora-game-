@@ -729,3 +729,245 @@ body.skylora-gameplay-active {
     line-height: 1.4;
   }
 }
+
+
+/* SOUND MATCH 320PX PASS */
+@media (max-width: 340px) {
+  .sound-match-home {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .sound-match-home > a {
+    min-height: 42px;
+    margin-bottom: 10px;
+    font-size: 0.76rem;
+  }
+
+  .sound-match-home-hero {
+    border-radius: 24px;
+  }
+
+  .sound-match-home-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 18px 16px 12px;
+  }
+
+  .sound-match-home-hero-inner p:first-child {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+
+  .sound-match-home-hero-inner h1 {
+    font-size: 2.25rem;
+    line-height: 1;
+  }
+
+  .sound-match-home-hero-inner p {
+    margin-top: 10px;
+    margin-bottom: 12px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .sound-match-home-hero-inner > div:first-child > div {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .sound-match-home-hero-inner > div:first-child > div > button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .sound-match-home-hero-inner > svg {
+    width: 92px;
+    margin-top: 2px;
+  }
+
+  .sound-match-home-hero > svg {
+    max-height: 88px;
+  }
+
+  .sound-match-home > div:nth-of-type(2) {
+    margin-top: 22px;
+    margin-bottom: 12px;
+  }
+
+  .sound-match-home > div:nth-of-type(2) h2 {
+    margin: 0;
+    font-size: 1.18rem;
+  }
+
+  .sound-match-home > div:nth-of-type(2) span {
+    display: none;
+  }
+
+  .sound-match-level-grid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .sound-match-level-grid > button {
+    min-width: 0;
+    min-height: 112px;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 22px;
+  }
+
+  .sound-match-level-grid > button > span:first-child {
+    width: 38px;
+    height: 38px;
+  }
+
+  .sound-match-level-grid > button > span:last-child > span:first-child {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+
+  .sound-match-level-grid > button > span:last-child > span:nth-child(2) {
+    margin-top: 4px;
+    font-size: 0.9rem;
+  }
+
+  .sound-match-level-grid > button > span:last-child > span:last-child {
+    margin-top: 5px;
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+
+  .sound-match-home > button:last-child {
+    margin-top: 16px;
+    min-height: 44px;
+    font-size: 0.76rem;
+  }
+
+  .sound-match-tutorial {
+    padding: 16px 14px;
+    border-radius: 24px;
+  }
+
+  .sound-match-tutorial > svg {
+    width: 88px;
+  }
+
+  .sound-match-tutorial h1 {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 1.75rem;
+    line-height: 1.05;
+  }
+
+  .sound-match-tutorial > p {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .sound-match-tutorial > button {
+    min-height: 46px;
+  }
+
+  .sound-match-tutorial-grid {
+    gap: 8px;
+  }
+
+  .sound-match-tutorial-grid > button {
+    min-height: 116px;
+    padding: 8px;
+    border-radius: 20px;
+  }
+
+  .sound-match-tutorial-grid > button svg {
+    width: 68px;
+    height: 68px;
+  }
+
+  .skylora-sound-round {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .skylora-sound-round .sound-match-round-card {
+    margin-top: 0;
+    padding: 4px 10px 10px;
+    border-radius: 22px;
+  }
+
+  .skylora-sound-round .skylora-sound-progress {
+    gap: 4px !important;
+    padding-block: 4px !important;
+  }
+
+  .skylora-sound-round h1 {
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+
+  .skylora-sound-round .skylora-activity-target {
+    min-height: 86px !important;
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+    gap: 8px;
+  }
+
+  .skylora-sound-round .skylora-sound-target-picture {
+    width: 68px !important;
+    height: 68px !important;
+  }
+
+  .skylora-sound-round [data-testid="sound-target"] > span.text-\[6rem\] {
+    font-size: 4rem;
+  }
+
+  .skylora-sound-round .skylora-sound-guide {
+    width: 58px !important;
+  }
+
+  .skylora-sound-round .skylora-sound-controls {
+    gap: 6px;
+  }
+
+  .skylora-sound-round .skylora-sound-feedback {
+    min-height: 18px !important;
+    margin: 3px 0 5px !important;
+    font-size: 0.78rem;
+  }
+
+  .skylora-sound-round .skylora-choice-grid {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px !important;
+  }
+
+  .skylora-sound-round .skylora-choice-card {
+    min-width: 0;
+    min-height: 92px !important;
+    padding: 7px 4px !important;
+    border-bottom-width: 4px;
+    border-radius: 18px;
+  }
+
+  .skylora-sound-round .skylora-sound-choice-picture {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .skylora-sound-round .skylora-choice-card > span.text-\[clamp\(3rem\,13vw\,4\.5rem\)\] {
+    font-size: 2.55rem;
+  }
+
+  .skylora-sound-round .skylora-choice-card > span.mt-2 {
+    margin-top: 4px;
+    font-size: 0.72rem;
+  }
+
+  .skylora-sound-round .skylora-round-reward {
+    min-height: 20px;
+    margin-top: 4px;
+  }
+}
