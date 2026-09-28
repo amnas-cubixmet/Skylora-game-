@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 const STORAGE_KEY = "skylora:number-hunt:progress:v1";
 
 async function startLevelOne(page: Page) {
-  await page.goto("/");
+  await page.goto("/number-hunt");
   await expect(page.getByRole("heading", { name: "Number Hunt" })).toBeVisible();
   const soundButton = page.getByRole("button", { name: "Turn sound off" });
   if (await soundButton.isVisible()) await soundButton.click();
@@ -104,7 +104,7 @@ test("Level 10 renders eight choices and 320px layout has no horizontal overflow
   );
 
   await page.setViewportSize({ width: 320, height: 700 });
-  await page.goto("/");
+  await page.goto("/number-hunt");
   await page.getByRole("button", { name: "Turn sound off" }).click();
   await page.getByRole("button", { name: "Level 10", exact: true }).click();
 
@@ -133,7 +133,7 @@ test("stays responsive at 375px, 390px, and tablet widths", async ({ page }) => 
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/number-hunt");
     await page.evaluate(() => window.localStorage.clear());
     await page.reload();
 
@@ -184,7 +184,7 @@ test("remains playable when localStorage is unavailable", async ({ page }) => {
     Object.defineProperty(Storage.prototype, "setItem", { configurable: true, value: blocked });
   });
 
-  await page.goto("/");
+  await page.goto("/number-hunt");
   await expect(page.getByText(/blocking local storage/i)).toBeVisible();
   await page.getByRole("button", { name: "Turn sound off" }).click();
   await page.getByRole("button", { name: "Start Level 1" }).click();
@@ -207,7 +207,7 @@ test("remains playable when speech synthesis is unavailable", async ({ page }) =
     });
   });
 
-  await page.goto("/");
+  await page.goto("/number-hunt");
   await page.getByRole("button", { name: "Start Level 1" }).click();
   await expect(page.locator(".target-number")).toBeVisible();
   await page.getByRole("button", { name: "Repeat the number instruction" }).click();

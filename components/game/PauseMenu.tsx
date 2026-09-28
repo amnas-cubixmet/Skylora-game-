@@ -1,5 +1,9 @@
 "use client";
 
+import { gameStyles as ui } from "./styles";
+
+
+import { Dialog } from "./Dialog";
 import { useState } from "react";
 
 type PauseMenuProps = {
@@ -14,32 +18,30 @@ export function PauseMenu({ soundEnabled, onContinue, onRestart, onToggleSound, 
   const [confirmRestart, setConfirmRestart] = useState(false);
 
   return (
-    <div className="modal-backdrop" role="presentation">
-      <section className="pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+    <Dialog labelledBy="pause-title" onClose={onContinue} className={ui["pause-card"]}>
         {!confirmRestart ? (
           <>
-            <p className="eyebrow">TAKE YOUR TIME</p>
+            <p className={ui["eyebrow"]}>TAKE YOUR TIME</p>
             <h2 id="pause-title">Game paused</h2>
             <p>Your progress is safe. Continue whenever you are ready.</p>
-            <div className="menu-stack">
-              <button className="primary-button" type="button" onClick={onContinue}>Continue</button>
-              <button className="secondary-button" type="button" onClick={() => setConfirmRestart(true)}>Restart Level</button>
-              <button className="secondary-button" type="button" onClick={onToggleSound}>Sound {soundEnabled ? "Off" : "On"}</button>
-              <button className="text-button" type="button" onClick={onExit}>Exit Game</button>
+            <div className={ui["menu-stack"]}>
+              <button className={ui["primary-button"]} type="button" onClick={onContinue}>Continue</button>
+              <button className={ui["secondary-button"]} type="button" onClick={() => setConfirmRestart(true)}>Restart Level</button>
+              <button className={ui["secondary-button"]} type="button" onClick={onToggleSound}>Sound {soundEnabled ? "Off" : "On"}</button>
+              <button className={ui["text-button"]} type="button" onClick={onExit}>Exit Game</button>
             </div>
           </>
         ) : (
           <>
-            <p className="eyebrow">RESTART LEVEL?</p>
+            <p className={ui["eyebrow"]}>RESTART LEVEL?</p>
             <h2 id="pause-title">Start this level again?</h2>
             <p>The progress from this level will reset. Your earlier completed levels stay saved.</p>
-            <div className="menu-stack">
-              <button className="primary-button" type="button" onClick={onRestart}>Yes, restart</button>
-              <button className="secondary-button" type="button" onClick={() => setConfirmRestart(false)}>Keep playing</button>
+            <div className={ui["menu-stack"]}>
+              <button className={ui["primary-button"]} type="button" onClick={onRestart}>Yes, restart</button>
+              <button className={ui["secondary-button"]} type="button" onClick={() => setConfirmRestart(false)}>Keep playing</button>
             </div>
           </>
         )}
-      </section>
-    </div>
+    </Dialog>
   );
 }

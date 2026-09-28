@@ -1,5 +1,8 @@
 "use client";
 
+import { gameStyles as ui } from "../game/styles";
+
+
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { CompletionScreen } from "../game/CompletionScreen";
 import { GameShell } from "../game/GameShell";
@@ -477,8 +480,8 @@ export function NumberHuntGame() {
   if (state.status === "LOADING") {
     return (
       <GameShell>
-        <section className="center-state" aria-live="polite">
-          <div className="loading-bubbles" aria-hidden="true"><span /><span /><span /></div>
+        <section className={ui["center-state"]} aria-live="polite">
+          <div className={ui["loading-bubbles"]} aria-hidden="true"><span /><span /><span /></div>
           <p>Getting Number Hunt ready…</p>
         </section>
       </GameShell>
@@ -488,11 +491,11 @@ export function NumberHuntGame() {
   if (state.status === "ERROR") {
     return (
       <GameShell soundEnabled={soundEnabled} onToggleSound={toggleSound}>
-        <section className="center-state error-card" role="alert">
-          <p className="eyebrow">SOMETHING WENT WRONG</p>
+        <section className={`${ui["center-state"]} ${ui["error-card"]}`} role="alert">
+          <p className={ui["eyebrow"]}>SOMETHING WENT WRONG</p>
           <h1>Number Hunt needs a fresh start.</h1>
           <p>{state.errorMessage}</p>
-          <button className="primary-button" type="button" onClick={() => dispatch({ type: "READY" })}>Back to Home</button>
+          <button className={ui["primary-button"]} type="button" onClick={() => dispatch({ type: "READY" })}>Back to Home</button>
         </section>
       </GameShell>
     );
@@ -502,30 +505,30 @@ export function NumberHuntGame() {
     const resume = progress.activeLevel;
     return (
       <GameShell soundEnabled={soundEnabled} onToggleSound={toggleSound}>
-        <section className="home-grid">
-          <div className="hero-card">
-            <p className="eyebrow">SKYLORA • GAME 01</p>
+        <section className={ui["home-grid"]}>
+          <div className={ui["hero-card"]}>
+            <p className={ui["eyebrow"]}>SKYLORA • GAME 01</p>
             <h1>Number Hunt</h1>
-            <p className="hero-copy">Listen, look, and find the number. There is no timer, no lives, and no penalty for trying again.</p>
-            <div className="sample-numbers" aria-hidden="true"><span>2</span><span>7</span><span>4</span><span>9</span></div>
+            <p className={ui["hero-copy"]}>Listen, look, and find the number. There is no timer, no lives, and no penalty for trying again.</p>
+            <div className={ui["sample-numbers"]} aria-hidden="true"><span>2</span><span>7</span><span>4</span><span>9</span></div>
             {resume ? (
-              <button className="primary-button large-button" type="button" onClick={() => startLevel(resume.level)}>
+              <button className={`${ui["primary-button"]} ${ui["large-button"]}`} type="button" onClick={() => startLevel(resume.level)}>
                 Resume Level {resume.level} • Question {Math.min(resume.completedRounds + 1, 10)}
               </button>
             ) : (
-              <button className="primary-button large-button" type="button" onClick={() => startLevel(progress.currentLevel)}>
+              <button className={`${ui["primary-button"]} ${ui["large-button"]}`} type="button" onClick={() => startLevel(progress.currentLevel)}>
                 Start Level {progress.currentLevel}
               </button>
             )}
-            <p className="support-note">Learning-support activity only. Gameplay does not diagnose a learning condition.</p>
+            <p className={ui["support-note"]}>Learning-support activity only. Gameplay does not diagnose a learning condition.</p>
           </div>
 
-          <aside className="progress-panel" aria-label="Number Hunt progress">
-            <div className="panel-heading">
-              <div><p className="eyebrow">YOUR JOURNEY</p><h2>Choose a level</h2></div>
-              <div className="star-total" aria-label={`${progress.stars} stars earned`}>★ {progress.stars}</div>
+          <aside className={ui["progress-panel"]} aria-label="Number Hunt progress">
+            <div className={ui["panel-heading"]}>
+              <div><p className={ui["eyebrow"]}>YOUR JOURNEY</p><h2>Choose a level</h2></div>
+              <div className={ui["star-total"]} aria-label={`${progress.stars} stars earned`}>★ {progress.stars}</div>
             </div>
-            <div className="level-grid">
+            <div className={ui["level-grid"]}>
               {LEVELS.map((level) => {
                 const unlocked = level.level <= progress.highestUnlockedLevel;
                 const completed = Boolean(progress.levelRecords[String(level.level)]);
@@ -533,7 +536,7 @@ export function NumberHuntGame() {
                   <button
                     key={level.level}
                     type="button"
-                    className={`level-button ${completed ? "is-complete" : ""}`}
+                    className={`${ui["level-button"]} ${completed ? "is-complete" : ""}`}
                     disabled={!unlocked}
                     onClick={() => startLevel(level.level)}
                     aria-label={`Level ${level.level}${unlocked ? "" : ", locked"}`}
@@ -545,15 +548,15 @@ export function NumberHuntGame() {
               })}
             </div>
 
-            <div className="learning-summary">
+            <div className={ui["learning-summary"]}>
               <h3>Learning progress</h3>
-              <div className="summary-row"><span>Accuracy</span><strong>{globalAccuracy}%</strong></div>
-              <div className="summary-row"><span>Average attempts</span><strong>{averageAttempts}</strong></div>
-              <div className="summary-row"><span>Hints used</span><strong>{progress.hintsUsed}</strong></div>
-              <div className="summary-row"><span>Recent progress</span><strong>{recentProgress}</strong></div>
-              <div className="summary-row summary-wide"><span>Needs more practice</span><strong>{topConfusions.length ? topConfusions.join(", ") : "No pattern yet"}</strong></div>
+              <div className={ui["summary-row"]}><span>Accuracy</span><strong>{globalAccuracy}%</strong></div>
+              <div className={ui["summary-row"]}><span>Average attempts</span><strong>{averageAttempts}</strong></div>
+              <div className={ui["summary-row"]}><span>Hints used</span><strong>{progress.hintsUsed}</strong></div>
+              <div className={ui["summary-row"]}><span>Recent progress</span><strong>{recentProgress}</strong></div>
+              <div className={`${ui["summary-row"]} ${ui["summary-wide"]}`}><span>Needs more practice</span><strong>{topConfusions.length ? topConfusions.join(", ") : "No pattern yet"}</strong></div>
             </div>
-            {!storageAvailable ? <p className="storage-note">This browser is blocking local storage. You can still play, but progress may not remain after refresh.</p> : null}
+            {!storageAvailable ? <p className={ui["storage-note"]}>This browser is blocking local storage. You can still play, but progress may not remain after refresh.</p> : null}
           </aside>
         </section>
       </GameShell>
@@ -598,19 +601,19 @@ export function NumberHuntGame() {
       showPause={state.status !== "CORRECT"}
       onPause={pauseGame}
     >
-      <section className={`play-area state-${state.status.toLowerCase()}`}>
-        <div className="play-topline">
-          <span className="level-pill">Level {state.level}</span>
-          <span className="stars-pill" aria-label={`${state.sessionStats.stars} stars this level`}>★ {state.sessionStats.stars}</span>
+      <section className={`${ui["play-area"]} state-${state.status.toLowerCase()}`}>
+        <div className={ui["play-topline"]}>
+          <span className={ui["level-pill"]}>Level {state.level}</span>
+          <span className={ui["stars-pill"]} aria-label={`${state.sessionStats.stars} stars this level`}>★ {state.sessionStats.stars}</span>
         </div>
 
         <ProgressDots current={state.round} total={10} />
 
-        <div className="instruction-block">
-          <div className="instruction-line">
+        <div className={ui["instruction-block"]}>
+          <div className={ui["instruction-line"]}>
             <p>Find the number</p>
             <button
-              className="replay-button"
+              className={ui["replay-button"]}
               type="button"
               onClick={() => {
                 cancelAudio();
@@ -623,12 +626,12 @@ export function NumberHuntGame() {
               <span>Repeat</span>
             </button>
           </div>
-          <div className="target-number" aria-label={`Target number ${question.target}`}>{question.target}</div>
+          <div className={ui["target-number"]} aria-label={`Target number ${question.target}`}>{question.target}</div>
         </div>
 
-        <p className={`feedback ${showSuccess ? "success-feedback" : ""}`} aria-live="polite">{feedback}</p>
+        <p className={`${ui["feedback"]} ${showSuccess ? ui["success-feedback"] : ""}`} aria-live="polite">{feedback}</p>
 
-        <div className={`number-grid choices-${question.options.length}`}>
+        <div className={`${ui["number-grid"]} ${ui[`choices-${question.options.length}`] ?? ""}`}>
           {question.options.map((value) => (
             <NumberCard
               key={value}
@@ -643,7 +646,7 @@ export function NumberHuntGame() {
           ))}
         </div>
 
-        <div className="play-footer">
+        <div className={ui["play-footer"]}>
           <span>Question {state.round + 1} of 10</span>
           <span>No timer • Take your time</span>
         </div>

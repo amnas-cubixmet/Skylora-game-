@@ -1,0 +1,4 @@
+export function Icon({name,className='h-5 w-5'}:{name:'sound'|'mute'|'pause'|'play'|'arrow'|'home'|'bulb'|'star'|'lock'|'close'|'leaf'|'back';className?:string}){
+ const paths:Record<string,string>={sound:'M11 5 6 9H3v6h3l5 4V5m4 3a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14',mute:'M11 5 6 9H3v6h3l5 4V5m5 4 5 6m0-6-5 6',pause:'M8 5v14M16 5v14',play:'m8 4 12 8-12 8V4',arrow:'M4 12h16m-6-6 6 6-6 6',home:'m3 11 9-8 9 8M6 9v12h12V9m-9 12v-7h6v7',bulb:'M9 18h6m-5 3h4M8 15C1 8 8 1 13 3c7 1 8 7 3 12l-1 3H9z',star:'m12 3 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z',lock:'M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5z',close:'m6 6 12 12M18 6 6 18',leaf:'M5 20C-1 6 11 2 21 3c0 12-6 18-16 17Zm0 0L16 8',back:'M20 12H4m6-6-6 6 6 6'};
+ return <svg aria-hidden="true" viewBox="0 0 24 24" fill={name==='star'?'currentColor':'none'} stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className={className}><path d={paths[name]}/></svg>;
+}

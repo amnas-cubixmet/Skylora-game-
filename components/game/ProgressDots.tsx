@@ -1,3 +1,5 @@
+import { gameStyles as ui } from "./styles";
+
 type ProgressDotsProps = {
   current: number;
   total: number;
@@ -5,12 +7,12 @@ type ProgressDotsProps = {
 
 export function ProgressDots({ current, total }: ProgressDotsProps) {
   return (
-    <div className="progress-dots" role="progressbar" aria-valuemin={1} aria-valuemax={total} aria-valuenow={current + 1}>
-      <span className="sr-only">Question {Math.min(current + 1, total)} of {total}</span>
+    <div className={ui["progress-dots"]} role="progressbar" aria-valuemin={1} aria-valuemax={total} aria-valuenow={Math.min(current + 1, total)}>
+      <span className={`sr-only`}>Question {Math.min(current + 1, total)} of {total}</span>
       {Array.from({ length: total }, (_, index) => (
         <span
           aria-hidden="true"
-          className={`progress-dot ${index < current ? "is-complete" : ""} ${index === current ? "is-current" : ""}`}
+          className={`${ui["progress-dot"]} ${index < current ? "is-complete" : ""} ${index === current ? "is-current" : ""}`}
           key={index}
         />
       ))}

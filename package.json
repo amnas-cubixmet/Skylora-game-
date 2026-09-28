@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test": "playwright test",
+    "test:logic": "playwright test --config=playwright.logic.config.ts"
   },
   "dependencies": {
     "next": "latest",
@@ -16,12 +18,15 @@
     "react-dom": "latest"
   },
   "devDependencies": {
+    "@playwright/test": "latest",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
-    "typescript": "latest",
-    "@playwright/test": "latest"
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "typescript": "latest"
   }
 }
