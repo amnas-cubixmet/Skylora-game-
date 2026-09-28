@@ -38,7 +38,7 @@ test('pause traps focus, escape resumes, restart preserves earned discoveries',a
 });
 test('all specified viewports fit and support touch-sized controls',async({page})=>{
  await setup(page,10);
- for(const [width,height] of [[320,568],[360,800],[375,667],[390,844],[414,896],[768,1024],[1024,768],[1366,900]]){
+ for(const [width,height] of [[320,568],[360,640],[360,800],[375,667],[390,844],[414,896],[768,1024],[1024,768],[1366,900]]){
   await page.setViewportSize({width,height});
   const box=await page.evaluate(()=>({width:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));expect(box.scroll).toBeLessThanOrEqual(box.width);
   const sizes=await page.getByTestId('letter-card').evaluateAll(es=>es.map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height})));expect(sizes.length).toBe(6);expect(sizes.every(b=>b.width>=44&&b.height>=44)).toBe(true);
