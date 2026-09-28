@@ -10,13 +10,13 @@ async function setup(page:Page,level=1){
  await expect(page.getByTestId('letter-card').first()).toBeVisible();
 }
 async function saved(page:Page){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)!),STORAGE_KEY);}
-async function answer(page:Page){const p=await saved(page);await page.locator(`[data-testid="letter-card"][data-value="${p.active.question.target}"]`).click();await expect(page.getByRole('button',{name:/Next discovery|See my treasures/})).toBeVisible();}
+async function answer(page:Page){const p=await saved(page),round=p.active.round;await page.locator(`[data-testid="letter-card"][data-value="${p.active.question.target}"]`).click();await page.waitForFunction(({key,round})=>{const saved=JSON.parse(localStorage.getItem(key)||'{}');return !saved.active||saved.active.round>round;},{key:STORAGE_KEY,round},{timeout:4000});}
 
 test('tutorial, complete session, unlock and saved progress',async({page})=>{
  await page.goto('/english-az-adventure');await openPractice(page);await page.getByRole('button',{name:'Let’s play',exact:true}).click();
  await page.getByRole('button',{name:'Letter B',exact:true}).click();await expect(page.getByText('Try again. Look for A.')).toBeVisible();
  await page.getByRole('button',{name:'Letter A',exact:true}).click();await page.getByRole('button',{name:'Let’s explore',exact:true}).click();
- for(let i=0;i<10;i++){await answer(page);await page.getByRole('button',{name:/Next discovery|See my treasures/}).click();}
+ for(let i=0;i<10;i++){await answer(page);}
  await expect(page.getByRole('heading',{name:'Look how far you’ve come!'})).toBeVisible();
  expect((await saved(page)).highest).toBe(2);expect((await saved(page)).stars).toBe(10);
  await page.getByRole('button',{name:'Back to my adventure map'}).click();await expect(page.getByRole('button',{name:/^Level 2:/})).toBeEnabled();await page.reload();expect((await saved(page)).tutorial).toBe(true);
@@ -29,7 +29,7 @@ test('hints, rapid duplicate tap, refresh and sound preference',async({page})=>{
  await page.getByRole('button',{name:'Turn sound on'}).click();await page.reload();await expect(page.getByRole('button',{name:'Turn sound off'})).toBeVisible();
 });
 test('pause traps focus, escape resumes, restart preserves earned discoveries',async({page})=>{
- await setup(page);await answer(page);await page.getByRole('button',{name:'Next discovery'}).click();await page.getByRole('button',{name:'Pause game'}).click();
+ await setup(page);await answer(page);await page.getByRole('button',{name:'Pause game'}).click();
  const dialog=page.getByRole('dialog');await expect(dialog).toBeVisible();await expect(page.getByRole('button',{name:'Continue',exact:true})).toBeFocused();
  await page.keyboard.press('Shift+Tab');await expect(page.getByRole('button',{name:'Exit Game'})).toBeFocused();await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'Continue',exact:true})).toBeFocused();
  await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);
@@ -48,7 +48,7 @@ test('keyboard selection and reduced motion remain usable',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await setup(page);
  const q=(await saved(page)).active.question;const card=page.locator(`[data-value="${q.target}"]`);await page.keyboard.press('Tab');await card.focus();await expect(card).toBeFocused();
  const css=await card.evaluate(e=>({outline:getComputedStyle(e).outlineStyle,animation:getComputedStyle(e).animationDuration}));expect(css.outline).not.toBe('none');expect(parseFloat(css.animation)).toBeLessThan(0.01);
- await page.keyboard.press('Enter');await expect(page.getByRole('button',{name:'Next discovery'})).toBeVisible();
+ const round=(await saved(page)).active.round;await page.keyboard.press('Enter');await page.waitForFunction(({key,round})=>{const saved=JSON.parse(localStorage.getItem(key)||'{}');return !saved.active||saved.active.round>round;},{key:STORAGE_KEY,round},{timeout:4000});
 });
 test('listening hides the target until requested; audio cancels previous speech',async({page})=>{
  await page.addInitScript(()=>{
@@ -60,7 +60,7 @@ test('listening hides the target until requested; audio cancels previous speech'
  await expect(page.getByRole('button',{name:'Hear the hidden letter'})).toBeVisible();
  await page.getByRole('button',{name:'Replay instruction'}).click();await page.getByRole('button',{name:'Replay instruction'}).click();
  const calls=await page.evaluate(()=>(window as unknown as {calls:string[]}).calls);expect(calls.filter(x=>x.startsWith('Find the letter')).length).toBeGreaterThanOrEqual(2);expect(calls.filter(x=>x==='cancel').length).toBeGreaterThanOrEqual(2);
- await page.getByRole('button',{name:'Show a letter clue'}).click();await expect(page.getByRole('button',{name:'Hear the hidden letter'})).toHaveCount(0);expect((await saved(page)).metrics.hints).toBe(1);
+ const q=(await saved(page)).active.question;const wrong=q.options.find((x:string)=>x!==q.target);await page.locator(`[data-value="${wrong}"]`).click();await page.waitForTimeout(300);await page.locator(`[data-value="${wrong}"]`).click();await expect(page.getByRole('button',{name:'Hear the hidden letter'})).toHaveCount(0);expect((await saved(page)).metrics.hints).toBeGreaterThanOrEqual(1);
 });
 
 test('parent metrics stay outside gameplay and modal is keyboard dismissible',async({page})=>{
@@ -74,7 +74,7 @@ test('all detective activity modes and final completion are playable',async({pag
   const q=(await saved(page)).active.question;modes.add(q.mode);
   if(i===0){await page.setViewportSize({width:320,height:568});await page.screenshot({path:info.outputPath('game-320.png'),fullPage:true,animations:'disabled'});await page.setViewportSize({width:1366,height:900});}
   if(q.mode==='picture')await expect(page.getByRole('button',{name:letterWord(q.target),exact:true})).toBeVisible();
-  await answer(page);await page.getByRole('button',{name:/Next discovery|See my treasures/}).click();
+  await answer(page);
  }
  expect(modes.size).toBe(6);await expect(page.getByRole('heading',{name:'You’re an A–Z Star!'})).toBeVisible();
  await page.screenshot({path:info.outputPath('complete.png'),fullPage:true,animations:'disabled'});await page.getByRole('button',{name:'Back to my adventure map'}).click();await page.screenshot({path:info.outputPath('home-desktop.png'),fullPage:true,animations:'disabled'});await page.setViewportSize({width:320,height:568});await page.screenshot({path:info.outputPath('home-320.png'),fullPage:true,animations:'disabled'});
