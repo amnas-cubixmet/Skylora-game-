@@ -1940,3 +1940,162 @@
     animation: none;
   }
 }
+
+
+/* 320PX HOME COMPACT PASS */
+@media (max-width: 340px) {
+  .learning-world .world-adventure-shell .game-header {
+    min-height: 62px;
+    padding: 7px 8px;
+    justify-content: flex-end;
+  }
+
+  /* Remove top text on very small screens; accessible labels remain on controls. */
+  .learning-world .world-adventure-shell .brand-lockup {
+    display: none;
+  }
+
+  .learning-world .world-adventure-shell .header-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  .learning-world .world-adventure-shell .world-nav {
+    flex: 1 1 auto;
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  .learning-world .world-adventure-shell .world-nav a,
+  .learning-world .world-adventure-shell .icon-button {
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    min-height: 48px;
+    border-radius: 14px;
+  }
+
+  .learning-world .world-adventure-shell .world-adventure-stage {
+    padding: 0 12px 36px;
+  }
+
+  .learning-world .world-adventure-shell .world-hero {
+    gap: 22px;
+    padding: 30px 0 42px;
+  }
+
+  .learning-world .world-adventure-shell .world-hero h1 {
+    max-width: 286px;
+    margin: 12px 0 14px;
+    font-size: 2.12rem;
+    line-height: 1.03;
+    letter-spacing: -0.055em;
+  }
+
+  .learning-world .world-adventure-shell .world-hero p:not(.world-eyebrow) {
+    max-width: 286px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .learning-world .world-adventure-shell .world-hero .world-note {
+    display: none;
+  }
+
+  .learning-world .world-adventure-shell .world-hero-art {
+    height: 230px;
+    border-radius: 26px;
+  }
+
+  .learning-world .world-adventure-shell .world-hero-art .world-guide svg {
+    width: 112px;
+  }
+
+  .learning-world .world-adventure-shell .world-orbit.one {
+    width: 58px;
+    height: 58px;
+    left: 7%;
+    top: 42px;
+    font-size: 1.2rem;
+  }
+
+  .learning-world .world-adventure-shell .world-orbit.two {
+    width: 68px;
+    height: 52px;
+    right: 7%;
+    top: 20px;
+    font-size: 1.16rem;
+  }
+
+  .learning-world .world-adventure-shell .world-orbit.three {
+    width: 46px;
+    height: 46px;
+    right: 7%;
+    bottom: 28px;
+    font-size: 1.2rem;
+  }
+
+  .learning-world .world-adventure-shell .world-orbit.four,
+  .learning-world .world-adventure-shell .world-orbit.five {
+    width: 34px;
+    height: 34px;
+    font-size: .82rem;
+  }
+
+  .learning-world .world-adventure-shell .world-section-heading h2,
+  .learning-world .world-adventure-shell .world-panel h2,
+  .learning-world .world-adventure-shell .world-practice h2,
+  .learning-world .world-adventure-shell .world-progress-cta h2 {
+    font-size: 1.55rem;
+  }
+
+  .learning-world .world-adventure-shell .world-card,
+  .learning-world .world-adventure-shell .world-card:last-child {
+    min-height: 220px;
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .learning-world .world-adventure-shell .world-symbol {
+    margin: 22px 0 16px;
+    font-size: 2.35rem;
+  }
+
+  .learning-world .world-adventure-shell .world-card h2 {
+    font-size: 1.32rem;
+  }
+
+  .learning-world .world-adventure-shell .world-card p {
+    margin-top: 7px;
+    font-size: .83rem;
+    line-height: 1.45;
+  }
+
+  .learning-world .world-adventure-shell .world-practice,
+  .learning-world .world-adventure-shell .world-progress-cta {
+    padding: 18px 16px;
+    border-radius: 24px;
+  }
+
+  .learning-world .world-adventure-shell .familiar-game-card,
+  .learning-world .world-adventure-shell .familiar-game-card:last-child {
+    min-height: 250px;
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .learning-world .world-adventure-shell .familiar-game-status {
+    max-width: 110px;
+    font-size: .62rem;
+  }
+
+  .learning-world .world-adventure-shell .familiar-game-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .learning-world .world-adventure-shell .world-footer {
+    min-height: 76px;
+    padding-top: 14px;
+  }
+}
