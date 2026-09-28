@@ -605,7 +605,7 @@ export function NumberHuntGame() {
       showPause={state.status !== "CORRECT" && state.status !== "PAUSED"}
       onPause={pauseGame}
     >
-      <section className={`${ui["play-area"]} skylora-activity-screen skylora-activity-card state-${state.status.toLowerCase()}`}>
+      <section data-testid="number-round" data-round={state.round + 1} className={`${ui["play-area"]} skylora-activity-screen skylora-activity-card state-${state.status.toLowerCase()}`}>
         <div className="skylora-round-progress" aria-label={`Progress: ${state.round} of 10`}>
           <ProgressDots current={state.round} total={10} />
         </div>
