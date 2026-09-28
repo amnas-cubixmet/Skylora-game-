@@ -7,7 +7,7 @@ import type { Preferences } from "../../lib/world/types";
 export function WorldFrame({
   children,
   settings,
-  title = "Learning Support World",
+  title = "Learning World",
   pause,
   toggleVoice,
   inert = false,
@@ -42,6 +42,7 @@ export function WorldFrame({
         soundEnabled={settings.voice}
         onToggleSound={toggleVoice}
         inert={inert}
+        headerContent={gameplay ? undefined : <WorldNav />}
       >
         {children}
       </GameShell>
@@ -61,10 +62,18 @@ export function Guide({ celebrate = false }: { celebrate?: boolean }) {
 export function WorldNav() {
   return (
     <nav aria-label="Learning world" className="world-nav">
-      <Link href="/">All worlds</Link>
-      <Link href="/learning-progress">My progress</Link>
-      <Link href="/rewards">Rewards</Link>
-      <Link href="/learning-settings">Settings</Link>
+      <Link href="/learning-progress" aria-label="My progress">
+        <span className="world-nav-icon" aria-hidden="true">↗</span>
+        <span className="world-nav-label">Progress</span>
+      </Link>
+      <Link href="/rewards" aria-label="Rewards">
+        <span className="world-nav-icon" aria-hidden="true">★</span>
+        <span className="world-nav-label">Rewards</span>
+      </Link>
+      <Link href="/learning-settings" aria-label="Learning settings">
+        <span className="world-nav-icon" aria-hidden="true">⚙</span>
+        <span className="world-nav-label">Settings</span>
+      </Link>
     </nav>
   );
 }
