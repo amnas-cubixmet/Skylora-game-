@@ -462,3 +462,62 @@ body.skylora-gameplay-active {
     display: none;
   }
 }
+
+
+@media (min-width: 561px) and (max-height: 820px) {
+  .skylora-gameplay-stage {
+    padding-top: 2px;
+    padding-bottom: 6px;
+  }
+
+  .skylora-sound-meta,
+  .skylora-sound-fallback,
+  .skylora-sound-round > p:last-child {
+    display: none;
+  }
+
+  .skylora-sound-progress {
+    gap: 6px !important;
+    padding-block: 6px !important;
+  }
+
+  .skylora-sound-round > .skylora-activity-card {
+    margin-top: 0 !important;
+    padding-bottom: 12px !important;
+  }
+
+  .skylora-sound-round .skylora-activity-target {
+    min-height: 100px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .skylora-sound-target-picture {
+    width: 90px !important;
+    height: 90px !important;
+  }
+
+  .skylora-sound-guide {
+    width: 72px !important;
+  }
+
+  .skylora-sound-feedback {
+    min-height: 20px !important;
+    margin-block: 5px !important;
+  }
+
+  .skylora-sound-round .skylora-choice-grid {
+    gap: 10px !important;
+  }
+
+  .skylora-sound-round .skylora-choice-card {
+    min-height: 120px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .skylora-sound-choice-picture {
+    width: 64px !important;
+    height: 64px !important;
+  }
+}
