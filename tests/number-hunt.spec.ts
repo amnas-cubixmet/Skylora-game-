@@ -14,21 +14,7 @@ async function startLevelOne(page: Page) {
 
 async function answerCurrentCorrectly(page: Page, questionNumber: number) {
   const target = (await page.locator(".target-number").innerText()).trim();
-  await page.getByRole("button", { name: new RegExp(`^Number ${target}(?:, hint)?import { expect, test, type Page } from "@playwright/test";
-
-const STORAGE_KEY = "skylora:number-hunt:progress:v1";
-
-async function startLevelOne(page: Page) {
-  await page.goto("/number-hunt");
-  await expect(page.getByRole("heading", { name: "Number Hunt" })).toBeVisible();
-  const soundButton = page.getByRole("button", { name: "Turn sound off" });
-  if (await soundButton.isVisible()) await soundButton.click();
-  await page.getByRole("button", { name: "Start Level 1" }).click();
-  await expect(page.locator(".target-number")).toBeVisible();
-  await expect(page.locator(".progress-dot")).toHaveCount(10);
-}
-
-) }).click();
+  await page.getByRole("button", { name: new RegExp("^Number " + target + "(?:, hint)?$") }).click();
   await expect(page.getByText("Great!", { exact: true })).toBeVisible();
   if (questionNumber < 10) {
     await expect.poll(async () =>
