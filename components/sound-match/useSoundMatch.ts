@@ -51,10 +51,10 @@ export function useSoundMatch(store: ProgressStore = localProgressStore) {
     void Promise.all([minimum, speak(parts)]).then(() => {
       if (!alive) return;
       if (state.correct) controller.current?.chime(state.progress.settings.sfx);
-      if (!state.correct || state.progress.settings.autoContinue) dispatch({ type: state.correct ? 'NEXT' : 'RETRY_READY' });
+      dispatch({ type: state.correct ? 'NEXT' : 'RETRY_READY' });
     });
     return () => { alive = false; clearTimeout(timer); stop(); };
-  }, [state.status, state.correct, state.feedback, state.question, state.progress.session?.attempts, state.progress.settings.autoContinue, state.progress.settings.sfx, speak, stop]);
+  }, [state.status, state.correct, state.feedback, state.question, state.progress.session?.attempts, state.progress.settings.sfx, speak, stop]);
   useEffect(() => {
     const hidden = () => { if (document.hidden) { stop(); dispatch({ type: 'PAUSE' }); } };
     document.addEventListener('visibilitychange', hidden);
