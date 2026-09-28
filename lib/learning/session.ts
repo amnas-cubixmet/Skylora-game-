@@ -1,4 +1,4 @@
-import { random, shuffle } from "../english/questions";
+import { seededRandom, shuffleSeeded } from "./random";
 import type { LearningRound, LearningSessionPlan, PracticeReason } from "./types";
 
 export const SESSION_MIN_ROUNDS = 6;
@@ -35,7 +35,7 @@ export function buildSessionPlan({
   if (!pool.length) throw new Error("Learning session needs at least one round");
 
   const count = Math.min(clampSessionLength(length), pool.length);
-  const rng = random(seed);
+  const rng = seededRandom(seed);
   const ranked = [...pool].sort((a, b) => {
     const focusA = focusSkill && a.skill === focusSkill ? -1 : 0;
     const focusB = focusSkill && b.skill === focusSkill ? -1 : 0;
@@ -54,7 +54,7 @@ export function buildSessionPlan({
   }
 
   if (selected.length < count) {
-    const remaining = shuffle(
+    const remaining = shuffleSeeded(
       ranked.filter((round) => !selected.some((item) => item.id === round.id)),
       rng,
     );
