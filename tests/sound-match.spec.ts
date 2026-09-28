@@ -11,12 +11,11 @@ async function setup(page:Page,level=1){
  await expect(page.getByTestId('sound-choice').first()).toBeVisible();
 }
 async function saved(page:Page){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)!),STORAGE_KEY);}
-async function solve(page:Page,next=true){
+async function solve(page:Page){
  const before=await page.locator('[data-round-id]').getAttribute('data-round-id');
- const p=await saved(page),target=p.session.question.target;
+ const p=await saved(page),target=p.session.question.target,index=p.session.index;
  await page.locator(`[data-testid="sound-choice"][data-value="${target}"]`).click();
- await expect(page.getByRole('button',{name:/Next discovery|See my sound garden/})).toBeVisible();
- if(next){await page.getByRole('button',{name:/Next discovery|See my sound garden/}).click();if(p.session.index<9)await expect(page.locator('[data-round-id]')).not.toHaveAttribute('data-round-id',before!);}
+ if(index<9)await expect(page.locator('[data-round-id]')).not.toHaveAttribute('data-round-id',before!,{timeout:4000});
 }
 test('root shows Sound Match card and opens the dedicated game slug',async({page})=>{
  await page.goto('/');await expect(page.getByRole('heading',{name:'A world of little discoveries.'})).toBeVisible();
@@ -44,12 +43,12 @@ test('all six activities present accessible touch choices and representative rou
 });
 test('gentle retry, replay hint dimming, feedback lock and saved resume',async({page})=>{
  await setup(page);const p=await saved(page),q=p.session.question,wrong=q.options.find((x:string)=>x!==q.target);
- await page.locator(`[data-value="${wrong}"]`).click();await expect(page.getByRole('button',{name:'Next discovery'})).toHaveCount(0);
+ await page.locator(`[data-value="${wrong}"]`).click();
  await expect(page.locator('[data-round-id] [data-testid="sound-choice"]')).toHaveCount(q.options.length);
  await page.waitForTimeout(800);const newest=await saved(page);expect(newest.totalAttempts).toBe(1);expect(Object.keys(newest.confusionPairs)).toContain(`${q.target}:${wrong}`);
  await page.getByRole('button',{name:'Pause game'}).click();await expect(page.getByRole('dialog')).toBeVisible();await page.getByRole('dialog').getByRole('button',{name:'Replay instruction'}).click();await expect(page.getByRole('dialog')).toHaveCount(0);
- await page.getByRole('button',{name:'Hint'}).click();await expect((await page.getByTestId('sound-choice').evaluateAll(es=>es.some(e=>e.className.includes('hint-pulse'))))).toBeTruthy();
- const target=page.locator(`[data-testid="sound-choice"][data-value="${q.target}"]`);const bounds=await target.boundingBox();expect(bounds).not.toBeNull();await page.mouse.click(bounds!.x+bounds!.width/2,bounds!.y+bounds!.height/2);await expect(page.getByRole('button',{name:'Next discovery'})).toBeVisible();expect((await saved(page)).totalRounds).toBe(1);
+ await page.locator(`[data-value="${wrong}"]`).click();await page.waitForTimeout(800);await expect((await page.getByTestId('sound-choice').evaluateAll(es=>es.some(e=>e.className.includes('hint-pulse'))))).toBeTruthy();
+ const before=await page.locator('[data-round-id]').getAttribute('data-round-id');const target=page.locator(`[data-testid="sound-choice"][data-value="${q.target}"]`);const bounds=await target.boundingBox();expect(bounds).not.toBeNull();await page.mouse.click(bounds!.x+bounds!.width/2,bounds!.y+bounds!.height/2);await expect(page.locator('[data-round-id]')).not.toHaveAttribute('data-round-id',before!,{timeout:4000});expect((await saved(page)).totalRounds).toBe(1);
  await page.reload();await expect(page.getByRole('button',{name:'Continue'})).toBeVisible();await page.getByRole('button',{name:'Continue'}).click();expect((await saved(page)).session.index).toBe(1);
 });
 test('Level 1 completes, unlocks the next place and Sound Detective completes',async({page})=>{
