@@ -80,3 +80,74 @@ The six levels can be tried independently by default. `REQUIRE_ALPHABET_BOOK` in
 The built-in fallback speaks example words and instructions with the device English voice; it does not manufacture an isolated IPA phoneme or claim studio narration. Reviewed phoneme/word audio files can be added by key to `AUDIO_CLIPS`; playback falls back to speech when missing or unavailable. Q is taught as `qu` in queen; C is hard /k/ in cat; G is hard /g/ in goat; X marks the final /k/ /s/ sounds in box. The UF Literacy Institute notes that example pronunciation should be modeled for blending and groups X later in its scope and sequence. Content uses a controlled early vocabulary; voice/accent checking on target devices and a literacy-review pass are still required before classroom release.
 
 Twemoji SVG picture cues from the letter book are local assets, carry their upstream attribution and CC BY 4.0 notice, and are available to this game offline. All game scenery and cards use bundled inline SVG.
+
+## Learning Support World — 34 new activities
+
+The home page now opens three skill-based worlds. Existing A–Z Adventure,
+Sound Match and Number Hunt routes remain available under Familiar Favourites.
+
+- `/worlds/reading`: 12 games, from letter recognition to short sentence comprehension.
+- `/worlds/writing`: 10 games, including pointer tracing, stroke start points,
+  copying, word construction and locally configured name practice.
+- `/worlds/maths`: 12 games, covering quantity, comparison, number lines,
+  number bonds, operations and pretend rupee coins.
+- Each game has its own root slug, such as `/sound-hunter`, `/finger-path`,
+  `/number-line-adventure`, `/maths-shop` and `/my-name`.
+- `/learning-progress`, `/learning-settings`, and `/rewards` provide local
+  observations, three presentation themes, voice/motion settings and badges.
+
+### Shared architecture
+
+`lib/world/catalogue.ts` registers the collection and skill sequence.
+`activities.ts` generates seeded, versioned activities with unique answers and
+explicit selection reasons. `progress.ts` owns transitions, support, observations,
+completion and stable resume. `storage.ts` is the replaceable storage boundary;
+`analytics.ts` emits local events without names, raw answers or drawing paths.
+`strokes.ts` contains normalized uppercase letter and preparation paths.
+
+`WorldGame` composes the existing GameShell, speech controller and dialog.
+`ActivityArea` renders choices, tile ordering, counted objects and movable number
+lines; `TracingCanvas` supports sequential strokes, coordinate scaling, pointer
+capture, keyboard-assisted tracing and explicit self-review for freehand copying.
+Name and word writing trace every letter, with repeated tiles distinguished by ID.
+
+Sessions contain eight activities. Successful answers persist a solved marker
+before feedback so reloads cannot award the same discovery again. Incorrect taps,
+hints and replay never remove rewards. Guided and independently completed work
+are recorded separately. Presentation is chosen by preference, not inferred age.
+The local record can be exported without the configured name and can be deleted.
+
+### Content and release boundaries
+
+The current curated decoding bank contains six short CVC words and three tiny
+comprehension passages. This is an initial content pack; adding game registrations
+and reviewed packs does not require replacing the engine. Choice count adapts
+between sessions; known letter confusions can recur in later practice. Skill-map
+ordering is instructional guidance and independent practice stays available.
+
+Audio uses browser English speech, with India/UK/US accent preference and a
+neutral voice setting for the older presentation. Spoken examples remain the
+fallback when isolated phoneme assets are unavailable. In Blend the Sounds,
+segmented notation and slowly spoken word practice are provided; **reviewed
+isolated phoneme recordings are still a release requirement for full auditory
+blending instruction**. Browser speech availability and accent vary by device.
+No handwriting recognition, diagnostic assessment or backend account sync is
+claimed. Copying uses learner-confirmed practice; tracing checks the guided path.
+Educator content review and real Safari/iOS/Android validation remain release gates.
+
+### Verification
+
+```sh
+npm run build
+npm run lint
+npm run typecheck
+npm run test:logic
+npx playwright install chromium
+npm test
+```
+
+`playwright.logic.config.ts` runs learning logic without a browser or web server.
+The browser suite checks each new game's first activity, complete mixed maths,
+tracing, hints, tutorial, pause, persistent resume, themes, keyboard interaction
+and widths 320/360/375/390/414. `CHROMIUM_EXECUTABLE_PATH` optionally supplies an
+existing Chromium executable in constrained CI environments.

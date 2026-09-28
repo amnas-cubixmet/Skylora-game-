@@ -13,7 +13,7 @@ export function useSoundMatch(store: ProgressStore = localProgressStore) {
   const speak = useCallback(async (parts: AudioPart[]) => {
     const token = ++playToken.current, enabled = stateRef.current.progress.settings.voice;
     setListening(enabled);
-    const ok = await controller.current?.play(parts, enabled);
+    const ok = await controller.current?.play(parts, enabled, stateRef.current.progress.settings.accent);
     if (token === playToken.current) { setListening(false); setAudioUnavailable(enabled && !ok); if (ok) emit('audio_played'); }
     return !!ok;
   }, []);
@@ -25,7 +25,7 @@ export function useSoundMatch(store: ProgressStore = localProgressStore) {
   }, [store]);
   useEffect(() => { if (state.status !== 'LOADING' && !store.save(state.progress) && state.available) dispatch({ type: 'STORAGE_UNAVAILABLE' }); }, [state.progress, state.status, state.available, store]);
   const act = useCallback((action: Action) => {
-    if (['START','HOME','PAUSE','RESUME','NEXT','RESTART_ACTIVITY','TUTORIAL'].includes(action.type) || (action.type==='SETTING'&&action.key==='voice')) stop();
+    if (['START','HOME','PAUSE','RESUME','NEXT','RESTART_ACTIVITY','TUTORIAL','ACCENT'].includes(action.type) || (action.type==='SETTING'&&action.key==='voice')) stop();
     if (action.type === 'RESTART_ACTIVITY') announced.current = '';
     dispatch(action);
   }, [stop]);
@@ -75,7 +75,7 @@ export function useSoundMatch(store: ProgressStore = localProgressStore) {
     const s = stateRef.current, q = s.question, a = s.progress.session;
     if (locked.current || !q || !a || !q.options.includes(value)) return;
     locked.current = true; stop();
-    dispatch({ type: 'SELECT', value, date: new Date().toISOString() });
+    dispatch({ type: 'SELECT', value, date: new Date().toISOString(), supported: !s.progress.settings.voice || audioUnavailable });
     const correct = value === q.target;
     emit('answer_selected', { target: q.target, selected: value, mode: q.mode });
     emit(correct ? 'answer_correct' : 'answer_retry', { target: q.target, mode: q.mode });
