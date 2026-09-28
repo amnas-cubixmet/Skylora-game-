@@ -596,12 +596,16 @@ export function NumberHuntGame() {
 
   return (
     <GameShell
+      gameplay
+      gameTitle="Number Hunt"
+      onBack={exitGame}
+      backLabel="Back to Number Hunt home"
       soundEnabled={soundEnabled}
       onToggleSound={toggleSound}
-      showPause={state.status !== "CORRECT"}
+      showPause={state.status !== "CORRECT" && state.status !== "PAUSED"}
       onPause={pauseGame}
     >
-      <section className={`${ui["play-area"]} state-${state.status.toLowerCase()}`}>
+      <section className={`${ui["play-area"]} skylora-activity-screen skylora-activity-card state-${state.status.toLowerCase()}`}>
         <div className={ui["play-topline"]}>
           <span className={ui["level-pill"]}>Level {state.level}</span>
           <span className={ui["stars-pill"]} aria-label={`${state.sessionStats.stars} stars this level`}>★ {state.sessionStats.stars}</span>
