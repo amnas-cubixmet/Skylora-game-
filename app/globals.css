@@ -419,7 +419,7 @@ body.skylora-gameplay-active {
   }
 
   .skylora-sound-round .skylora-choice-card {
-    min-height: 100px !important;
+    min-height: 106px !important;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
   }
@@ -441,7 +441,7 @@ body.skylora-gameplay-active {
   }
 
   .skylora-sound-round .skylora-choice-card {
-    min-height: 100px !important;
+    min-height: 106px !important;
   }
 
   .skylora-gameplay-stage .world-tracing {
