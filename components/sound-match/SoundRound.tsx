@@ -17,7 +17,7 @@ export function SoundRound({ state, listening, unavailable, onSelect, onReplay, 
   const earned=state.correct?(a?a.index+1:10):(a?.index??0);
   const colors=['bg-[#f0eafb] border-[#d7ccec]','bg-[#f9eddb] border-[#ecd9b8]','bg-[#e8f1e8] border-[#cbdcc8]','bg-[#e7eff7] border-[#cbdcea]'];
   return <section data-round-id={q.id} className={`skylora-activity-screen skylora-sound-round mx-auto max-w-4xl ${state.correct?'is-correct':''}`}>
-    <div className="skylora-activity-card mt-3 rounded-[32px] border border-border bg-white px-4 pb-6 pt-1 shadow-[0_12px_50px_#47355a08] sm:px-8">
+    <div className="sound-match-round-card skylora-activity-card mt-3 rounded-[32px] border border-border bg-white px-4 pb-6 pt-1 shadow-[0_12px_50px_#47355a08] sm:px-8">
       <SoundProgress earned={earned}/>
       <h1 ref={heading} tabIndex={-1} className="m-0 text-center text-xl font-extrabold tracking-tight outline-none sm:text-3xl">{subtitle}</h1>
       <div className="skylora-activity-target relative mx-auto my-4 flex min-h-32 max-w-md items-center justify-center gap-4 sm:min-h-40">
