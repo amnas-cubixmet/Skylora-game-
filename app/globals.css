@@ -451,9 +451,8 @@ body.skylora-gameplay-active {
 
 @media (orientation: landscape) and (max-height: 500px) {
   .skylora-gameplay-stage {
-    align-items: flex-start;
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    align-items: center;
+    overflow: hidden;
   }
 
   .skylora-sound-guide,
@@ -519,5 +518,79 @@ body.skylora-gameplay-active {
   .skylora-sound-choice-picture {
     width: 64px !important;
     height: 64px !important;
+  }
+}
+
+
+/* GAME FIRST: keep active rounds visual, stable and child-sized. */
+.skylora-round-progress {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 28px;
+}
+
+.skylora-context-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.skylora-context-button {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+  font-size: 1.45rem;
+  box-shadow: 0 5px 0 rgba(89, 72, 142, 0.08);
+}
+
+.skylora-game-feedback {
+  min-height: 24px;
+  margin: 6px auto 8px;
+  text-align: center;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.skylora-game-feedback.is-success {
+  color: var(--success);
+}
+
+.skylora-inline-hint {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+  animation: hint-pulse 1.4s ease-in-out infinite;
+}
+
+.skylora-auto-next,
+.skylora-auto-reward {
+  display: block;
+  margin-top: 6px;
+  text-align: center;
+  font-size: 1.35rem;
+  line-height: 1;
+  animation: star-pop .35s ease-out both;
+}
+
+@media (max-width: 560px) {
+  .skylora-game-feedback {
+    margin-block: 3px 5px;
+    min-height: 20px;
+    font-size: .82rem;
+  }
+
+  .skylora-context-button {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    border-radius: 16px;
   }
 }
