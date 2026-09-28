@@ -1,3 +1,4 @@
+import { topConfusion } from "../learning/adaptive";
 import { GAMES, type Game } from "./catalogue";
 import { activityFor } from "./activities";
 import {
@@ -34,10 +35,7 @@ export function recommendation(p: Progress, world?: string): Game {
 }
 export function newSession(g: Game, p: Progress, seed: number): Session {
   const record = p.skills[`${g.world}:${g.skill}`],
-    confusion =
-      Object.entries(record?.confusions ?? {})
-        .sort((a, b) => b[1] - a[1])[0]?.[0]
-        .split("→")[0] ?? null;
+    confusion = topConfusion(record?.confusions ?? {})?.target ?? null;
   return {
     game: g.slug,
     seed,
