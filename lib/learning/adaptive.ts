@@ -128,7 +128,10 @@ export function decideAdaptation(snapshot: AdaptiveSnapshot): AdaptiveDecision {
   return {
     action: "maintain",
     stage,
-    choiceCount: adaptiveChoiceCount(snapshot.recent, 3, 4),
+    choiceCount:
+      stage === "not-started" || stage === "practising"
+        ? 2
+        : adaptiveChoiceCount(snapshot.recent, 3, 4),
     replayInstruction: false,
     pulseCorrectAfterAttempts: 3,
     focus,
