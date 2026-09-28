@@ -1,3 +1,4 @@
+import { confusionWeight } from '../learning/adaptive';
 import { CONFUSIONS, LETTERS, LEVELS, letter, type Mode } from './content';
 import type { Progress, Question } from './types';
 export function random(seed: number) {
@@ -21,8 +22,8 @@ export function generateQuestion(level: number, round: number, progress: Progres
   let target = sweep[round % sweep.length];
   if (round % 3 === 2 && (config.range > 3 || round >= 3)) {
     const weighted = pool.flatMap(l => {
-      const count = Object.entries(progress.confusions).filter(([key]) => key.startsWith(l + ':')).reduce((n, [, v]) => n + v, 0);
-      return Array.from({ length: Math.min(count, 6) }, () => l);
+      const count = confusionWeight(progress.confusions, l);
+      return Array.from({ length: count }, () => l);
     });
     if (weighted.length) target = weighted[Math.floor(rng() * weighted.length)];
   }
