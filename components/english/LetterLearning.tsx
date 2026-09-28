@@ -33,7 +33,7 @@ export function LetterLearning({sound,children}:{sound:boolean;children:ReactNod
  }
  if(!state.loaded)return <p role="status">Opening your alphabet book…</p>;
  if(practice&&complete)return <><button className={`${secondary} mb-5`} onClick={()=>{stopAudio();setPractice(false);}}>← Back to letter learning</button>{children}</>;
- return <section className="mx-auto max-w-5xl">
+ return <section className="english-letter-learning mx-auto w-full min-w-0 max-w-5xl overflow-x-hidden">
   <nav className="mb-5 flex flex-wrap items-center justify-between gap-3"><Link href="/" className="inline-flex min-h-11 items-center font-bold text-primary">← All games</Link>{lesson&&<button className={secondary} onClick={()=>navigate(null)}>A–Z letter list</button>}</nav>
   {!lesson?<>
    <div className="relative rounded-[32px] bg-[#eee8f6] p-6 sm:p-10"><GuideCharacter mood="happy" className="float-right ml-3 w-20 sm:w-32"/><p className="text-xs font-extrabold tracking-widest text-primary">FIRST, LET’S MEET THE LETTERS</p><h1 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">My alphabet book</h1><p className="mt-4 max-w-xl leading-relaxed text-muted">Explore A to Z. Each letter has five words to discover and hear. After every letter, your practice adventures will be ready.</p><p className="mt-5 text-sm font-bold text-primary" role="status">{done} of 26 letters explored</p></div>
