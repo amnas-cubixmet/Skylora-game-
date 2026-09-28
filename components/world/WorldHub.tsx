@@ -5,7 +5,7 @@ import { GAMES, SKILLS, WORLDS, type World } from "../../lib/world/catalogue";
 import { fresh, type Progress } from "../../lib/world/types";
 import { worldStore } from "../../lib/world/storage";
 import { recommendation, stage } from "../../lib/world/progress";
-import { WorldFrame, WorldNav, Guide } from "./WorldFrame";
+import { WorldFrame, Guide } from "./WorldFrame";
 import { GameLibrary } from "../game/GameLibrary";
 import { Dialog } from "../game/Dialog";
 export function WorldHub({
@@ -62,11 +62,10 @@ export function WorldHub({
         save({ ...p, settings: { ...p.settings, voice: !p.settings.voice } })
       }
     >
-      <WorldNav />
       {view === "home" && (
         <>
           <section className="world-hero">
-            <div>
+            <div className="world-hero-copy">
               <p className="world-eyebrow">Small steps. New possibilities.</p>
               <h1>{w ? w.title : "A world of little discoveries."}</h1>
               <p>
@@ -94,6 +93,8 @@ export function WorldHub({
               <span className="world-orbit one">Aa</span>
               <span className="world-orbit two">123</span>
               <span className="world-orbit three">✎</span>
+              <span className="world-orbit four">★</span>
+              <span className="world-orbit five">✦</span>
               <Guide />
             </div>
           </section>
@@ -190,14 +191,12 @@ export function WorldHub({
             </>
           )}
           <section className="world-practice">
-            <div>
-              <p className="world-eyebrow">
-                A little practice, whenever you’re ready
-              </p>
+            <div className="world-practice-copy">
+              <p className="world-eyebrow">Your next adventure</p>
               <h2>{recommended.title}</h2>
               <p>{recommended.description}</p>
               <span className="world-note">
-                Recommended from your practice history. No streaks to keep.
+                Pick up gently from where learning feels most useful.
               </span>
             </div>
             <Link className="world-primary" href={`/${recommended.slug}`}>
@@ -213,6 +212,30 @@ export function WorldHub({
               <GameLibrary />
             </section>
           )}
+          {!world && (
+            <section className="world-progress-cta">
+              <div className="world-progress-marks" aria-hidden="true">
+                <span>★</span>
+                <span>✓</span>
+                <span>✦</span>
+              </div>
+              <div className="world-progress-copy">
+                <p className="world-eyebrow">For parents & teachers</p>
+                <h2>Every little step counts.</h2>
+                <p>
+                  See gentle learning observations, discoveries and skills without
+                  scores, streak pressure or timers.
+                </p>
+              </div>
+              <Link className="world-secondary" href="/learning-progress">
+                View progress <span aria-hidden="true">→</span>
+              </Link>
+            </section>
+          )}
+          <footer className="world-footer">
+            <strong>SKYLORA</strong>
+            <span>Learn through play, at your own pace.</span>
+          </footer>
         </>
       )}
       {view === "progress" && (
