@@ -1,6 +1,6 @@
 # SKYLORA — English A–Z Adventure
 
-A calm, illustrated browser alphabet game for ages 4–8. The English adventure is at `/`; the existing Number Hunt remains at `/number-hunt`.
+A calm, illustrated browser alphabet game for ages 4–8. The root `/` is a game catalog. English lives at `/english-az-adventure`; Number Hunt remains at `/number-hunt`.
 
 ## Run locally
 
@@ -22,6 +22,10 @@ npm run test:e2e
 The Playwright suite includes learning-engine tests, all ten levels, adaptive confusion practice, persistence, audio cancellation/fallbacks, keyboard and dialog focus, reduced motion, 320–1366px layouts, and the original Number Hunt regression suite.
 
 ## Learning experience
+
+Start with the A–Z letter book: each letter offers five labeled word cards (130 total), browser-voice pronunciation, replay, and uppercase/lowercase forms. Explore all five words to complete a letter. After all 26 letters are explored, the existing ten practice levels open. Letter-book progress uses a separate validated, versioned local save; exploring words is not an assessment of mastery. Sound-off or unavailable-speech users can read together and still progress. X examples use the final /ks/ sound (box, fox, six, wax, mix).
+
+The letter book bundles Twemoji SVG picture cues locally so rendering does not depend on emoji fonts or remote requests. Attribution and the CC BY 4.0 license are included under `public/images/words`; some cues represent an associated concept rather than an exact illustration. Existing practice activities retain their 26 SVG illustrations. Browser speech is not studio-recorded pronunciation audio.
 
 Each session has ten discoveries, followed by a natural stopping point. A child chooses when to continue. There are no timers, lives, negative scores, streak penalties, ads, purchases, external links, or leaderboards.
 

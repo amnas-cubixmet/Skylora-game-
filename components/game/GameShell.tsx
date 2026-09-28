@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Icon } from "./Icon";
 import { gameStyles as ui } from "./styles";
 
@@ -22,7 +23,7 @@ export function GameShell({ children, onPause, showPause = false, soundEnabled, 
     <main inert={inert} className={adventure ? "relative min-h-svh overflow-x-clip bg-[#faf8f2] text-ink" : ui["game-shell"]}>
       <header className={ui["game-header"]}>
         <div className={ui["brand-lockup"]} aria-label={`SKYLORA ${gameTitle}`}>
-          <span className={ui["brand-name"]}>SKYLORA</span>
+          <Link href="/" className={ui["brand-name"]} aria-label="SKYLORA all games">SKYLORA</Link>
           <span className={ui["game-name"]}>{gameTitle}</span>
         </div>
         <div className={ui["header-actions"]}>

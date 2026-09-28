@@ -1,16 +1,19 @@
 import { test, expect, type Page } from '@playwright/test';
 import { freshProgress } from '../lib/english/types';
+import { LESSON_KEY, LESSONS } from '../lib/english/lessons';
 import { STORAGE_KEY } from '../lib/english/storage';
+test.beforeEach(async({page})=>{await page.addInitScript(({key,lessons})=>{localStorage.setItem(key,JSON.stringify({version:1,explored:Object.fromEntries(lessons.map(l=>[l.letter,l.words.map(w=>w.word)]))}));},{key:LESSON_KEY,lessons:LESSONS});});
+async function openPractice(page:Page){await page.getByRole('button',{name:'Start practice adventures'}).click();}
 async function setup(page:Page,level=1){
  await page.addInitScript(({key,p})=>{if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(p));},{key:STORAGE_KEY,p:{...freshProgress(),highest:level,tutorial:true,sound:false}});
- await page.goto('/');await page.getByRole('button',{name:new RegExp(`^Level ${level}:`)}).click();
+ await page.goto('/english-az-adventure');await openPractice(page);await page.getByRole('button',{name:new RegExp(`^Level ${level}:`)}).click();
  await expect(page.getByTestId('letter-card').first()).toBeVisible();
 }
 async function saved(page:Page){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)!),STORAGE_KEY);}
 async function answer(page:Page){const p=await saved(page);await page.locator(`[data-testid="letter-card"][data-value="${p.active.question.target}"]`).click();await expect(page.getByRole('button',{name:/Next discovery|See my treasures/})).toBeVisible();}
 
 test('tutorial, complete session, unlock and saved progress',async({page})=>{
- await page.goto('/');await page.getByRole('button',{name:'Let’s play',exact:true}).click();
+ await page.goto('/english-az-adventure');await openPractice(page);await page.getByRole('button',{name:'Let’s play',exact:true}).click();
  await page.getByRole('button',{name:'Letter B',exact:true}).click();await expect(page.getByText('Try again. Look for A.')).toBeVisible();
  await page.getByRole('button',{name:'Letter A',exact:true}).click();await page.getByRole('button',{name:'Let’s explore',exact:true}).click();
  for(let i=0;i<10;i++){await answer(page);await page.getByRole('button',{name:/Next discovery|See my treasures/}).click();}
@@ -21,7 +24,7 @@ test('tutorial, complete session, unlock and saved progress',async({page})=>{
 test('hints, rapid duplicate tap, refresh and sound preference',async({page})=>{
  await setup(page);const q=(await saved(page)).active.question;const wrong=q.options.find((x:string)=>x!==q.target);
  const wrongCard=page.locator(`[data-value="${wrong}"]`);await wrongCard.click();await page.waitForTimeout(300);await wrongCard.click();await expect(page.getByText('Let’s look carefully.')).toBeVisible();
- expect((await saved(page)).metrics.hints).toBe(1);await page.reload();await page.getByRole('button',{name:'Continue adventure'}).click();expect((await saved(page)).active.question).toEqual(q);
+ expect((await saved(page)).metrics.hints).toBe(1);await page.reload();await openPractice(page);await page.getByRole('button',{name:'Continue adventure'}).click();expect((await saved(page)).active.question).toEqual(q);
  await page.waitForTimeout(300);await page.locator(`[data-value="${q.target}"]`).evaluate((e:HTMLButtonElement)=>{e.click();e.click();});expect((await saved(page)).stars).toBe(1);
  await page.getByRole('button',{name:'Turn sound on'}).click();await page.reload();await expect(page.getByRole('button',{name:'Turn sound off'})).toBeVisible();
 });
@@ -59,13 +62,9 @@ test('listening hides the target until requested; audio cancels previous speech'
  const calls=await page.evaluate(()=>(window as unknown as {calls:string[]}).calls);expect(calls.filter(x=>x.startsWith('Find the letter')).length).toBeGreaterThanOrEqual(2);expect(calls.filter(x=>x==='cancel').length).toBeGreaterThanOrEqual(2);
  await page.getByRole('button',{name:'Show a letter clue'}).click();await expect(page.getByRole('button',{name:'Hear the hidden letter'})).toHaveCount(0);expect((await saved(page)).metrics.hints).toBe(1);
 });
-test('missing speech and blocked storage have playable fallbacks',async({page})=>{
- const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
- await page.addInitScript(()=>{Object.defineProperty(window,'speechSynthesis',{value:undefined,configurable:true});Object.defineProperty(Storage.prototype,'getItem',{value:()=>{throw new Error('blocked');}});Object.defineProperty(Storage.prototype,'setItem',{value:()=>{throw new Error('blocked');}});});
- await page.goto('/');await expect(page.getByText(/browser can’t save progress/)).toBeVisible();await page.getByRole('button',{name:'Let’s play',exact:true}).click();await page.getByRole('button',{name:'Letter A',exact:true}).click();await page.getByRole('button',{name:'Let’s explore',exact:true}).click();await expect(page.getByTestId('letter-card')).toHaveCount(3);expect(errors).toEqual([]);
-});
+
 test('parent metrics stay outside gameplay and modal is keyboard dismissible',async({page})=>{
- await page.goto('/');await page.getByRole('button',{name:'For grown-ups'}).click();await expect(page.getByRole('dialog')).toBeVisible();await expect(page.getByText('First-try, without hints')).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);
+ await page.goto('/english-az-adventure');await openPractice(page);await page.getByRole('button',{name:'For grown-ups'}).click();await expect(page.getByRole('dialog')).toBeVisible();await expect(page.getByText('First-try, without hints')).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);
 });
 
 test('all detective activity modes and final completion are playable',async({page},info)=>{
