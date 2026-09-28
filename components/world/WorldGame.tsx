@@ -107,7 +107,7 @@ export function WorldGame({ game }: { game: Game }) {
       const timer = setTimeout(() => {
         roundSeen.current = "";
         act({ type: "NEXT" });
-      }, 1500);
+      }, 1100);
       return () => clearTimeout(timer);
     }
   // A correct child interaction advances after the short in-place celebration.
@@ -334,8 +334,8 @@ export function WorldGame({ game }: { game: Game }) {
           data-testid="world-round"
           data-round={q.id}
         >
-          <div className="world-round-top">
-            <span className="world-eyebrow">{game.title}</span>
+          <div className="world-round-top world-progress-only">
+            <span className="sr-only">{game.title}</span>
             <div
               className="world-gems"
               role="img"
@@ -359,24 +359,27 @@ export function WorldGame({ game }: { game: Game }) {
           </h1>
           <div className="world-round-controls">
             <button
-              className={`world-secondary ${speaking ? "listening" : ""}`}
+              className={`skylora-round-action ${speaking ? "listening" : ""}`}
               disabled={!p.settings.voice}
               onClick={replay}
+              aria-label={speaking ? "Listening" : "Replay instruction"}
+              title="Replay"
             >
-              ◖)) {speaking ? "Listening…" : "Replay audio"}
+              <span aria-hidden="true">🔊</span>
             </button>
             <button
-              className="world-secondary"
+              className="skylora-round-action"
               onClick={hint}
               disabled={status !== "PLAYING"}
+              aria-label="Show hint"
+              title="Hint"
             >
-              ✧ Hint
+              <span aria-hidden="true">💡</span>
             </button>
           </div>
           {(!p.settings.voice || audioError) && (
-            <p className="world-note" role="status">
-              {audioError ? "Voice is unavailable." : "Voice is off."} A visual
-              clue is ready. This counts as supported practice.
+            <p className="sr-only" role="status">
+              {audioError ? "Voice is unavailable." : "Voice is off."} A visual clue is ready.
             </p>
           )}
           <ActivityArea
@@ -394,22 +397,10 @@ export function WorldGame({ game }: { game: Game }) {
           <div
             role="status"
             aria-live="polite"
-            className={`world-feedback ${s.correct ? "positive" : ""}`}
+            className={`world-feedback skylora-round-feedback ${s.correct ? "positive" : ""}`}
           >
-            {s.correct ? "✓ " : ""}
-            {s.feedback || "Look, listen and take your time."}
+            {s.correct ? "✨ Great!" : status === "ANSWER_FEEDBACK" ? "Try again!" : ""}
           </div>
-          {s.correct && (
-            <button
-              className="world-primary"
-              onClick={() => {
-                roundSeen.current = "";
-                act({ type: "NEXT" });
-              }}
-            >
-              {session.index === 7 ? "Collect my badge" : "Next discovery"} →
-            </button>
-          )}
         </section>
       )}
       {status === "GAME_COMPLETE" && (

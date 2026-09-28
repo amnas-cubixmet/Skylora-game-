@@ -583,16 +583,7 @@ export function NumberHuntGame() {
 
   const hintStage: 0 | 1 | 2 = state.attemptsForQuestion >= 3 ? 2 : state.attemptsForQuestion >= 2 ? 1 : 0;
   const showSuccess = state.status === "CORRECT";
-  const milestone = showSuccess && state.round === 4;
-  const feedback = showSuccess
-    ? milestone
-      ? "Amazing! Keep going!"
-      : `Great! That is ${question.target}.`
-    : state.status === "HINT"
-      ? "Take another look. A gentle hint is here."
-      : state.status === "TRY_AGAIN"
-        ? "Try again. You can do it."
-        : "Tap the matching number.";
+  const feedback = showSuccess ? "Great!" : state.status === "TRY_AGAIN" ? "Try again!" : "";
 
   return (
     <GameShell
@@ -606,11 +597,7 @@ export function NumberHuntGame() {
       onPause={pauseGame}
     >
       <section className={`${ui["play-area"]} skylora-activity-screen skylora-activity-card state-${state.status.toLowerCase()}`}>
-        <div className={ui["play-topline"]}>
-          <span className={ui["level-pill"]}>Level {state.level}</span>
-          <span className={ui["stars-pill"]} aria-label={`${state.sessionStats.stars} stars this level`}>★ {state.sessionStats.stars}</span>
-        </div>
-
+        <span className="sr-only">Level {state.level}</span>
         <ProgressDots current={state.round} total={10} />
 
         <div className={ui["instruction-block"]}>
@@ -625,9 +612,9 @@ export function NumberHuntGame() {
               }}
               disabled={!soundEnabled}
               aria-label="Repeat the number instruction"
+              title="Replay"
             >
               <span aria-hidden="true">🔊</span>
-              <span>Repeat</span>
             </button>
           </div>
           <div className={ui["target-number"]} aria-label={`Target number ${question.target}`}>{question.target}</div>
@@ -650,10 +637,6 @@ export function NumberHuntGame() {
           ))}
         </div>
 
-        <div className={ui["play-footer"]}>
-          <span>Question {state.round + 1} of 10</span>
-          <span>No timer • Take your time</span>
-        </div>
       </section>
 
       {state.status === "PAUSED" ? (

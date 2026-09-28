@@ -207,6 +207,48 @@ body.skylora-gameplay-active {
   touch-action: manipulation;
 }
 
+.skylora-round-action {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--primary-dark);
+  display: inline-grid;
+  place-items: center;
+  font-size: 1.2rem;
+  box-shadow: 0 6px 16px rgba(61, 49, 102, 0.07);
+  transition: transform 140ms ease, opacity 140ms ease, box-shadow 140ms ease;
+}
+
+.skylora-round-action:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.skylora-round-action:disabled {
+  opacity: 0.42;
+}
+
+.skylora-round-action.listening {
+  animation: hint-pulse 1.8s ease-in-out infinite;
+}
+
+.world-progress-only {
+  justify-content: center !important;
+}
+
+.skylora-round-feedback {
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.skylora-round-reward {
+  min-height: 32px;
+}
+
 .skylora-gameplay-stage .world-back {
   display: none;
 }
