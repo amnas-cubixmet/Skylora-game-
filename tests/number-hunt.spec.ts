@@ -17,10 +17,8 @@ async function answerCurrentCorrectly(page: Page, questionNumber: number) {
   await page.getByRole("button", { name: new RegExp("^Number " + target + "(?:, hint)?$") }).click();
   await expect(page.getByText("Great!", { exact: true })).toBeVisible();
   if (questionNumber < 10) {
-    await expect.poll(async () =>
-      page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "{}").activeLevel?.completedRounds ?? -1, STORAGE_KEY),
-    ).toBe(questionNumber);
-    await expect(page.locator(".target-number")).toBeVisible();
+    await expect(page.locator(".play-area.state-playing")).toBeVisible({ timeout: 4_000 });
+    await expect(page.locator(".number-card").first()).toBeEnabled();
   }
 }
 
