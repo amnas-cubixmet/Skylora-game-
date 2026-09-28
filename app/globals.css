@@ -219,6 +219,40 @@ body.skylora-gameplay-active {
 }
 
 @media (max-width: 560px) {
+  .skylora-sound-meta,
+  .skylora-sound-fallback {
+    display: none;
+  }
+
+  .skylora-sound-progress {
+    gap: 5px !important;
+    padding-block: 6px !important;
+  }
+
+  .skylora-sound-round > .skylora-activity-card {
+    margin-top: 0 !important;
+    padding-bottom: 10px !important;
+  }
+
+  .skylora-sound-feedback {
+    min-height: 20px !important;
+    margin-block: 4px !important;
+  }
+
+  .skylora-sound-round .skylora-choice-grid {
+    gap: 8px !important;
+  }
+
+  .skylora-sound-round .skylora-choice-card {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .skylora-sound-choice-picture {
+    width: 56px !important;
+    height: 56px !important;
+  }
+
   .skylora-gameplay-topbar {
     min-height: 52px;
     padding-inline: 10px;
@@ -380,8 +414,8 @@ body.skylora-gameplay-active {
   }
 
   .skylora-sound-target-picture {
-    width: 82px !important;
-    height: 82px !important;
+    width: 68px !important;
+    height: 68px !important;
   }
 
   .skylora-sound-round .skylora-choice-card {
