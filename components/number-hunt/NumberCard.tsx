@@ -31,7 +31,7 @@ export function NumberCard({
       aria-label={`Number ${value}${hinted ? ", hint" : ""}`}
     >
       <span className={ui["number-value"]}>{value}</span>
-      {showSuccess && isTarget ? <span className={ui["number-badge"]}>Great!</span> : null}
+      {showSuccess && isTarget ? <span className={ui["number-badge"]} aria-hidden="true">★</span> : null}
       {hinted ? <span className={ui["hint-label"]}>Look here</span> : null}
     </button>
   );
