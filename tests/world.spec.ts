@@ -23,6 +23,7 @@ async function open(page: Page, game: Game) {
   return p.session;
 }
 async function solve(page: Page, q: Activity) {
+  const before = await page.getByTestId("world-round").getAttribute("data-round");
   if (q.mechanic === "choice") {
     await page.locator(`[data-choice="${q.answer}"]`).click();
   }
@@ -111,9 +112,14 @@ async function solve(page: Page, q: Activity) {
       }
     }
   }
-  await expect(
-    page.getByRole("button", { name: /Next discovery|Collect my badge/ }),
-  ).toBeVisible();
+  await page.waitForFunction(
+    ({ before }) => {
+      const round = document.querySelector('[data-testid="world-round"]');
+      return !round || round.getAttribute("data-round") !== before;
+    },
+    { before },
+    { timeout: 4_000 },
+  );
 }
 for (const game of GAMES)
   test(`${game.id} ${game.title} is playable with a working first activity`, async ({
@@ -132,11 +138,6 @@ test("a full mixed maths session completes and earns a persisted badge", async (
     session = await open(page, game);
   for (let index = 0; index < 8; index++) {
     await solve(page, activityFor(game, { ...session, index }));
-    await page
-      .getByRole("button", {
-        name: index === 7 ? "Collect my badge →" : "Next discovery →",
-      })
-      .click();
   }
   await expect(
     page.getByRole("heading", { name: "Adventure complete!" }),
@@ -158,8 +159,8 @@ test("first visit tutorial, retries, hints, pause and a solved-round reload are 
   await page.getByRole("button", { name: "Pause game" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.getByRole("button", { name: "Resume", exact: true }).click();
-  await page.getByRole("button", { name: "✧ Hint", exact: true }).click();
-  await page.getByRole("button", { name: "✧ Hint", exact: true }).click();
+  await page.getByRole("button", { name: "Show a hint", exact: true }).click();
+  await page.getByRole("button", { name: "Show a hint", exact: true }).click();
   const id = await page
     .locator(".world-choice.hint-glow")
     .getAttribute("data-choice");
