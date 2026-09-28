@@ -58,7 +58,7 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 button:focus-visible {
-  outline: 4px solid rgba(103, 86, 199, 0.28);
+  outline: 4px solid #806ac4;
   outline-offset: 3px;
 }
 button:disabled { cursor: default; }
@@ -89,3 +89,11 @@ p { margin-block: 1em; }
     transition-duration: 0.001ms !important;
   }
 }
+
+@keyframes guide-float { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-6px) rotate(1deg); } }
+@keyframes guide-dance { 0%,100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-9px) rotate(-5deg); } 70% { transform: translateY(-4px) rotate(5deg); } }
+@keyframes card-arrive { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes letter-pop { 40% { transform: scale(1.06); } 75% { transform: scale(.98); } }
+@keyframes reward-trail { 0% { transform: translate(-50%,0) scale(.5); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(90px,-220px) scale(.2); opacity: 0; } }
+
+@keyframes letter-idle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }

@@ -1,5 +1,2 @@
-import { NumberHuntGame } from "../components/number-hunt/NumberHuntGame";
-
-export default function HomePage() {
-  return <NumberHuntGame />;
-}
+import { EnglishAdventure } from '../components/english/EnglishAdventure';
+export default function HomePage(){ return <EnglishAdventure/>; }

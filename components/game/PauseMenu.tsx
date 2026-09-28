@@ -3,6 +3,7 @@
 import { gameStyles as ui } from "./styles";
 
 
+import { Dialog } from "./Dialog";
 import { useState } from "react";
 
 type PauseMenuProps = {
@@ -17,8 +18,7 @@ export function PauseMenu({ soundEnabled, onContinue, onRestart, onToggleSound, 
   const [confirmRestart, setConfirmRestart] = useState(false);
 
   return (
-    <div className={ui["modal-backdrop"]} role="presentation">
-      <section className={ui["pause-card"]} role="dialog" aria-modal="true" aria-labelledby="pause-title">
+    <Dialog labelledBy="pause-title" onClose={onContinue} className={ui["pause-card"]}>
         {!confirmRestart ? (
           <>
             <p className={ui["eyebrow"]}>TAKE YOUR TIME</p>
@@ -42,7 +42,6 @@ export function PauseMenu({ soundEnabled, onContinue, onRestart, onToggleSound, 
             </div>
           </>
         )}
-      </section>
-    </div>
+    </Dialog>
   );
 }

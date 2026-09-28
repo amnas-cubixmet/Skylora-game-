@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon } from "./Icon";
 import { gameStyles as ui } from "./styles";
 
 
@@ -7,19 +8,22 @@ import type { ReactNode } from "react";
 
 type GameShellProps = {
   children: ReactNode;
+  gameTitle?: string;
+  adventure?: boolean;
+  inert?: boolean;
   onPause?: () => void;
   showPause?: boolean;
   soundEnabled?: boolean;
   onToggleSound?: () => void;
 };
 
-export function GameShell({ children, onPause, showPause = false, soundEnabled, onToggleSound }: GameShellProps) {
+export function GameShell({ children, onPause, showPause = false, soundEnabled, onToggleSound, gameTitle = "Number Hunt", adventure = false, inert = false }: GameShellProps) {
   return (
-    <main className={ui["game-shell"]}>
+    <main inert={inert} className={adventure ? "relative min-h-svh overflow-x-clip bg-[#faf8f2] text-ink" : ui["game-shell"]}>
       <header className={ui["game-header"]}>
-        <div className={ui["brand-lockup"]} aria-label="SKYLORA Number Hunt">
+        <div className={ui["brand-lockup"]} aria-label={`SKYLORA ${gameTitle}`}>
           <span className={ui["brand-name"]}>SKYLORA</span>
-          <span className={ui["game-name"]}>Number Hunt</span>
+          <span className={ui["game-name"]}>{gameTitle}</span>
         </div>
         <div className={ui["header-actions"]}>
           {onToggleSound && typeof soundEnabled === "boolean" ? (
@@ -30,17 +34,17 @@ export function GameShell({ children, onPause, showPause = false, soundEnabled, 
               aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
               title={soundEnabled ? "Sound on" : "Sound off"}
             >
-              <span aria-hidden="true">{soundEnabled ? "🔊" : "🔇"}</span>
+              <Icon name={soundEnabled ? "sound" : "mute"}/>
             </button>
           ) : null}
           {showPause && onPause ? (
             <button className={ui["icon-button"]} type="button" onClick={onPause} aria-label="Pause game" title="Pause">
-              <span aria-hidden="true">Ⅱ</span>
+              <Icon name="pause"/>
             </button>
           ) : null}
         </div>
       </header>
-      <div className={ui["game-stage"]}>{children}</div>
+      <div className={adventure ? "relative mx-auto w-full max-w-6xl px-3 py-3 sm:px-6 sm:py-8" : ui["game-stage"]}>{children}</div>
     </main>
   );
 }
