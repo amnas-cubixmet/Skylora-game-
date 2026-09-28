@@ -35,7 +35,8 @@ test('all six activities present accessible touch choices and representative rou
   if(level===6)expect(mode).toBeTruthy();
   for(const [width,height] of [[320,568],[360,640],[360,800],[375,667],[390,844],[414,896],[768,1024],[1024,768],[1366,900]]){
    await page.setViewportSize({width,height});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-   const boxes=await page.getByTestId('sound-choice').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return {width:b.width,height:b.height,top:b.top,bottom:b.bottom};}));expect(boxes.every(b=>b.width>=100&&b.height>=100&&b.top>=0&&b.bottom<=height)).toBe(true);
+   const boxes=await page.getByTestId('sound-choice').evaluateAll(es=>es.map(e=>{const b=e.getBoundingClientRect();return {width:b.width,height:b.height,top:b.top,bottom:b.bottom};}));
+   expect(boxes.every(b=>b.width>=100&&b.height>=100&&b.top>=0&&b.bottom<=height),`${width}x${height} sound choices: ${JSON.stringify(boxes)}`).toBe(true);
   }
   await page.setViewportSize({width:390,height:844});await solve(page);
   await page.getByRole('button',{name:'Back to Sound Match home'}).click();await page.getByRole('link',{name:'SKYLORA all games'}).click();await expect(page).toHaveURL('/');
