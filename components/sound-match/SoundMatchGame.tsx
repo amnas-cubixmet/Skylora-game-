@@ -31,8 +31,8 @@ export function SoundMatchGame() {
   function home(){act({type:'HOME'});emit('game_exited');}
   function resume(){act({type:'RESUME'});emit('game_resumed');}
   return <>
-    <GameShell adventure gameTitle="Sound Match" inert={paused||parents||switchTo!==null} soundEnabled={p.settings.voice} onToggleSound={()=>act({type:'SETTING',key:'voice'})} showPause={active} onPause={()=>{act({type:'PAUSE'});emit('game_paused');}}>
-      <div className="pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <GameShell adventure gameplay={active} gameTitle="Sound Match" inert={paused||parents||switchTo!==null} onBack={home} backLabel="Back to Sound Match home" soundEnabled={p.settings.voice} onToggleSound={()=>act({type:'SETTING',key:'voice'})} showPause={active&&!paused} onPause={()=>{act({type:'PAUSE'});emit('game_paused');}}>
+      <div className={active?"skylora-gameplay-content":"pb-[max(1rem,env(safe-area-inset-bottom))]"}>
       {status==='LOADING'&&<div role="status" className="grid min-h-[65svh] place-content-center justify-items-center text-muted"><GuideCharacter mood="listening"/><p>Opening your sound garden…</p></div>}
       {!unlocked&&status!=='LOADING'?<section className="mx-auto max-w-xl rounded-3xl bg-white p-8 text-center"><GuideCharacter className="mx-auto w-32"/><h1 className="text-3xl font-black">Meet your letters first</h1><p className="text-muted">Your sound garden will be ready after the A–Z letter book.</p><Link className={primary} href="/english-az-adventure">Explore the alphabet</Link></section>:<>
       {status==='READY'&&<SoundHome progress={p} onStart={begin} onTutorial={()=>{pending.current=p.session?.level??1;act({type:'TUTORIAL'});emit('tutorial_started');}} onParents={()=>{stop();setParents(true);}}/>}

@@ -13,5 +13,5 @@ export function SoundGarden({ current = 0, compact = false }: { current?: number
   </div>;
 }
 export function SoundProgress({ earned }: { earned: number }) {
-  return <div role="progressbar" aria-label="Sound gems collected" aria-valuemin={0} aria-valuemax={10} aria-valuenow={Math.min(10,earned)} className="flex flex-wrap justify-center gap-2 py-4">{Array.from({length:10},(_,i)=><span aria-hidden="true" key={i} className={`grid size-5 place-items-center rounded-full sm:size-6 ${i<earned?'bg-[#f5df9f] text-[#92712b]':'border-2 border-[#ded5e8] bg-[#f6f2f9]'}`}>{i<earned&&<Icon name="star" className="size-3 sm:size-4"/>}</span>)}</div>;
+  return <div role="progressbar" aria-label="Sound gems collected" aria-valuemin={0} aria-valuemax={10} aria-valuenow={Math.min(10,earned)} className="skylora-sound-progress flex flex-wrap justify-center gap-2 py-4">{Array.from({length:10},(_,i)=><span aria-hidden="true" key={i} className={`grid size-5 place-items-center rounded-full sm:size-6 ${i<earned?'bg-[#f5df9f] text-[#92712b]':'border-2 border-[#ded5e8] bg-[#f6f2f9]'}`}>{i<earned&&<Icon name="star" className="size-3 sm:size-4"/>}</span>)}</div>;
 }

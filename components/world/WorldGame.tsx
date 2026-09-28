@@ -103,6 +103,17 @@ export function WorldGame({ game }: { game: Game }) {
     }
   }, [status, s.feedback, s.correct, q, speak, session?.attempts]);
   useEffect(() => {
+    if (status === "ANSWER_FEEDBACK" && s.correct && q) {
+      const timer = setTimeout(() => {
+        roundSeen.current = "";
+        act({ type: "NEXT" });
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  // A correct child interaction advances after the short in-place celebration.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, s.correct, q?.id]);
+  useEffect(() => {
     if (status === "TUTORIAL")
       void speak(
         `${game.description} Listen or look, then try the activity. Hints and replay are always here.`,
@@ -203,7 +214,10 @@ export function WorldGame({ game }: { game: Game }) {
     <WorldFrame
       settings={p.settings}
       title={game.title}
-      pause={active ? () => act({ type: "PAUSE" }) : undefined}
+      gameplay={active}
+      backHref={`/worlds/${game.world}`}
+      backLabel={`Back to ${world.title}`}
+      pause={active && !paused && status !== "ANSWER_FEEDBACK" ? () => act({ type: "PAUSE" }) : undefined}
       toggleVoice={() => {
         stop();
         dispatch({
@@ -213,7 +227,7 @@ export function WorldGame({ game }: { game: Game }) {
       }}
       inert={paused || switching}
     >
-      <Link
+      {!active && <Link
         onClick={() => {
           stop();
           worldEvent("game_exited", game.id);
@@ -222,7 +236,7 @@ export function WorldGame({ game }: { game: Game }) {
         href={`/worlds/${game.world}`}
       >
         ← {world.title}
-      </Link>
+      </Link>}
       {status === "LOADING" && (
         <section className="world-welcome" role="status">
           <Guide />
@@ -316,7 +330,7 @@ export function WorldGame({ game }: { game: Game }) {
       )}
       {active && q && session && (
         <section
-          className="world-round"
+          className={`world-round skylora-activity-screen skylora-activity-card ${s.correct ? "is-correct" : ""}`}
           data-testid="world-round"
           data-round={q.id}
         >

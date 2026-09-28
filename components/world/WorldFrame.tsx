@@ -11,6 +11,9 @@ export function WorldFrame({
   pause,
   toggleVoice,
   inert = false,
+  gameplay = false,
+  backHref,
+  backLabel,
 }: {
   children: ReactNode;
   settings: Preferences;
@@ -18,6 +21,9 @@ export function WorldFrame({
   pause?: () => void;
   toggleVoice?: () => void;
   inert?: boolean;
+  gameplay?: boolean;
+  backHref?: string;
+  backLabel?: string;
 }) {
   return (
     <div
@@ -27,7 +33,10 @@ export function WorldFrame({
     >
       <GameShell
         adventure
+        gameplay={gameplay}
         gameTitle={title}
+        backHref={backHref}
+        backLabel={backLabel}
         showPause={!!pause}
         onPause={pause}
         soundEnabled={settings.voice}
