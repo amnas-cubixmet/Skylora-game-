@@ -1,4 +1,4 @@
-import { random, shuffle } from '../english/questions';
+import { seededRandom as random, shuffleSeeded as shuffle } from '../learning/random';
 import { LEVELS, MODES, PAIRS, sound } from './content';
 import { choiceCount, introducedPool } from './difficulty';
 import type { Mode, Progress, Round } from './types';
