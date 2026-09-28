@@ -124,10 +124,14 @@ test("Level 10 renders eight choices and 320px layout has no horizontal overflow
 });
 
 
-test("stays responsive at 375px, 390px, and tablet widths", async ({ page }) => {
+test("stays responsive across the mobile gameplay viewport matrix", async ({ page }) => {
   const viewports = [
-    { width: 375, height: 812 },
+    { width: 320, height: 568 },
+    { width: 360, height: 640 },
+    { width: 360, height: 800 },
+    { width: 375, height: 667 },
     { width: 390, height: 844 },
+    { width: 414, height: 896 },
     { width: 768, height: 1024 },
   ];
 
@@ -148,10 +152,14 @@ test("stays responsive at 375px, 390px, and tablet widths", async ({ page }) => 
     }));
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
 
-    const cardHeights = await page.locator(".number-card").evaluateAll((elements) =>
-      elements.map((element) => element.getBoundingClientRect().height),
+    const cardBoxes = await page.locator(".number-card").evaluateAll((elements) =>
+      elements.map((element) => {
+        const box = element.getBoundingClientRect();
+        return { height: box.height, top: box.top, bottom: box.bottom };
+      }),
     );
-    expect(Math.min(...cardHeights)).toBeGreaterThanOrEqual(70);
+    expect(Math.min(...cardBoxes.map((box) => box.height))).toBeGreaterThanOrEqual(70);
+    expect(cardBoxes.every((box) => box.top >= 0 && box.bottom <= viewport.height)).toBe(true);
   }
 });
 
