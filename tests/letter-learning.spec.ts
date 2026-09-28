@@ -7,7 +7,7 @@ test('all 26 lessons have five unique words; corrupted progress never unlocks pr
  for(const raw of ['bad','null','{"version":2}','{"version":1,"explored":{"A":["fake"]}}'])expect(allLessonsComplete(parseLessons(raw))).toBe(false);
 });
 test('root is a catalog and games have independent URLs',async({page})=>{
- await page.goto('/');await expect(page.getByRole('heading',{name:'Where shall we explore today?'})).toBeVisible();await expect(page.getByTestId('letter-card')).toHaveCount(0);
+ await page.goto('/');await expect(page.getByRole('heading',{name:'A world of little discoveries.'})).toBeVisible();await expect(page.getByTestId('letter-card')).toHaveCount(0);
  await page.getByRole('link',{name:/English A–Z Adventure/}).click();await expect(page).toHaveURL(/\/english-az-adventure$/);await expect(page.getByRole('button',{name:/^Explore [A-Z]/})).toHaveCount(26);
  await page.getByRole('link',{name:'SKYLORA all games'}).click();await page.getByRole('link',{name:/Number Hunt/}).click();await expect(page).toHaveURL(/\/number-hunt$/);
 });

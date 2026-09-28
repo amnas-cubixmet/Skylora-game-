@@ -20,7 +20,7 @@ type GameShellProps = {
 
 export function GameShell({ children, onPause, showPause = false, soundEnabled, onToggleSound, gameTitle = "Number Hunt", adventure = false, inert = false }: GameShellProps) {
   return (
-    <main inert={inert} className={adventure ? "relative min-h-svh overflow-x-clip bg-[#faf8f2] text-ink" : ui["game-shell"]}>
+    <main inert={inert} style={{paddingTop:'env(safe-area-inset-top)',paddingLeft:'env(safe-area-inset-left)',paddingRight:'env(safe-area-inset-right)'}} className={adventure ? "relative min-h-svh overflow-x-clip bg-[#faf8f2] text-ink" : ui["game-shell"]}>
       <header className={ui["game-header"]}>
         <div className={ui["brand-lockup"]} aria-label={`SKYLORA ${gameTitle}`}>
           <Link href="/" className={ui["brand-name"]} aria-label="SKYLORA all games">SKYLORA</Link>
