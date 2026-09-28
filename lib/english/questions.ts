@@ -1,14 +1,9 @@
+import { confusionWeight } from '../learning/adaptive';
+import { seededRandom, shuffleSeeded } from '../learning/random';
 import { CONFUSIONS, LETTERS, LEVELS, letter, type Mode } from './content';
 import type { Progress, Question } from './types';
-export function random(seed: number) {
-  let value = seed >>> 0;
-  return () => { value = (value * 1664525 + 1013904223) >>> 0; return value / 4294967296; };
-}
-export function shuffle<T>(values: T[], rng: () => number): T[] {
-  const result = [...values];
-  for (let i = result.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [result[i], result[j]] = [result[j], result[i]]; }
-  return result;
-}
+export const random = seededRandom;
+export const shuffle = shuffleSeeded;
 export function generateQuestion(level: number, round: number, progress: Progress, seed: number): Question {
   const config = LEVELS[level - 1] ?? LEVELS[0];
   const rng = random(seed + round * 7919 + level * 101);
@@ -21,8 +16,8 @@ export function generateQuestion(level: number, round: number, progress: Progres
   let target = sweep[round % sweep.length];
   if (round % 3 === 2 && (config.range > 3 || round >= 3)) {
     const weighted = pool.flatMap(l => {
-      const count = Object.entries(progress.confusions).filter(([key]) => key.startsWith(l + ':')).reduce((n, [, v]) => n + v, 0);
-      return Array.from({ length: Math.min(count, 6) }, () => l);
+      const count = confusionWeight(progress.confusions, l);
+      return Array.from({ length: count }, () => l);
     });
     if (weighted.length) target = weighted[Math.floor(rng() * weighted.length)];
   }

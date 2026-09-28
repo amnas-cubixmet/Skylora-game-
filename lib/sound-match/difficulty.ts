@@ -1,3 +1,4 @@
+import { adaptiveChoiceCount } from '../learning/adaptive';
 import { PAIRS, SOUNDS } from './content';
 import type { Progress } from './types';
 export function introducedPool(level: number, index: number, p: Progress): string[] {
@@ -12,8 +13,9 @@ export function choiceCount(level: number, index: number, p: Progress): number {
   if (level === 5) return 2;
   if (level === 2) return 3;
   if (level === 1) return index >= 3 && p.recent.slice(-3).length === 3 && p.recent.slice(-3).every(Boolean) ? 3 : 2;
-  if (p.recent.slice(-3).filter(v => !v).length >= 2) return 2;
-  return level >= 3 && index >= 5 && p.recent.slice(-4).length === 4 && p.recent.slice(-4).every(Boolean) ? 4 : 3;
+  const adaptive = adaptiveChoiceCount(p.recent, 3, 4);
+  if (level >= 3 && index >= 5) return adaptive;
+  return Math.min(adaptive, 3);
 }
 export function confusionUpdate(p: Progress, target: string, selected: string) {
   const key = `${target}:${selected}`;

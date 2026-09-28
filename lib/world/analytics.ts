@@ -1,3 +1,5 @@
+import { dispatchLearningEvent } from "../learning/analytics";
+
 // Local, bounded-schema event bus. Never pass a learner name, drawing, or raw answer.
 export function worldEvent(
   name:
@@ -13,10 +15,15 @@ export function worldEvent(
   skill?: string,
   reason?: string,
 ) {
-  if (typeof window !== "undefined")
-    window.dispatchEvent(
-      new CustomEvent("skylora:learning", {
-        detail: { version: 1, name, game, skill, reason, time: Date.now() },
-      }),
-    );
+  const detail: Record<string, string | number | boolean> = {};
+  if (skill) detail.skill = skill;
+  if (reason) detail.reason = reason;
+  dispatchLearningEvent({
+    channel: "skylora:learning",
+    game,
+    version: 1,
+    name,
+    detail,
+    timeField: "time",
+  });
 }
