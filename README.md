@@ -63,3 +63,20 @@ The implementation is fully playable with browser speech synthesis and visual fa
 Phonics rounds ask about sounds in a spoken example word, rather than sending IPA symbols to text-to-speech as if they were reliable isolated phonemes. Q is taught with U in “queen”; X uses the final sound of “box”; C/G use their hard sounds. Printed phoneme symbols use a British English reference. Before a classroom/public content release, an early-literacy specialist should review the selected voice/content on target devices and supply professionally reviewed recordings if consistent isolated phonemes are required. Real iPhone/iPad/Android audio and child usability pilot testing remain release work beyond automated Chromium testing.
 
 No microphone is used. No child name, birthday, location, recordings, or account information is collected. Browser storage is device-local and may be cleared by the browser; a future sync adapter should be added behind the storage boundary rather than inside UI components.
+
+## Game 02 — Sound Match
+
+Sound Match runs at `/sound-match` and appears beside Game 01 and Number Hunt on the Games Home page. Six ten discovery sessions teach sound-to-letter, sound-to-picture, picture-to-letter, beginning-sound, similar-sound, and mixed detective activities. Choices begin at two or three large cards and adjust from recent practice. The last level uses six modes, with gentle visual progress and a short stopping point.
+
+- `lib/sound-match/content.ts`: reviewed grapheme/word examples, controlled mappings, six level designs and adaptive-unlock switch.
+- `lib/sound-match/questions.ts` and `difficulty.ts`: seeded choice generation, sound-distinct distractors, progressive A–Z introduction and adaptive review.
+- `lib/sound-match/progress.ts` and `storage.ts`: guarded game state and versioned, corruption-tolerant persistence behind a replaceable `ProgressStore` boundary.
+- `lib/sound-match/audio.ts`: cancellable speech, optional real-recording manifest, failed-audio fallback, a watchdog for stalled speech and subtle synthesized chimes.
+- `lib/sound-match/analytics.ts`: local events only; no child identifiers or analytics network requests.
+- `components/sound-match`: welcome map, tutorial, sound rounds, pause, adult observations and illustrated Sound Garden.
+
+The six levels can be tried independently by default. `REQUIRE_ALPHABET_BOOK` in `lib/sound-match/content.ts` can turn on the alphabet-book gate. Progress includes per-activity observations, recent first-try results, confused pairs, settings, ten-round checkpoints, completion dates and resumable rounds. Voice and chimes have separate saved preferences. No timer, leaderboard, purchases, chat, microphone, account or screen-time streak is included.
+
+The built-in fallback speaks example words and instructions with the device English voice; it does not manufacture an isolated IPA phoneme or claim studio narration. Reviewed phoneme/word audio files can be added by key to `AUDIO_CLIPS`; playback falls back to speech when missing or unavailable. Q is taught as `qu` in queen; C is hard /k/ in cat; G is hard /g/ in goat; X marks the final /k/ /s/ sounds in box. The UF Literacy Institute notes that example pronunciation should be modeled for blending and groups X later in its scope and sequence. Content uses a controlled early vocabulary; voice/accent checking on target devices and a literacy-review pass are still required before classroom release.
+
+Twemoji SVG picture cues from the letter book are local assets, carry their upstream attribution and CC BY 4.0 notice, and are available to this game offline. All game scenery and cards use bundled inline SVG.
