@@ -8,16 +8,14 @@ async function startLevelOne(page: Page) {
   const soundButton = page.getByRole("button", { name: "Turn sound off" });
   if (await soundButton.isVisible()) await soundButton.click();
   await page.getByRole("button", { name: "Start Level 1" }).click();
-  await expect(page.locator(".play-footer").getByText("Question 1 of 10", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("number-round")).toHaveAttribute("data-round", "1");
 }
 
 async function answerCurrentCorrectly(page: Page, questionNumber: number) {
   const target = (await page.locator(".target-number").innerText()).trim();
   await page.getByRole("button", { name: new RegExp(`^Number ${target}(?:, hint)?$`) }).click();
   if (questionNumber < 10) {
-    await expect(
-      page.locator(".play-footer").getByText(`Question ${questionNumber + 1} of 10`, { exact: true }),
-    ).toBeVisible({ timeout: 4_000 });
+    await expect(page.getByTestId("number-round")).toHaveAttribute("data-round", String(questionNumber + 1), { timeout: 4_000 });
   }
 }
 
@@ -75,7 +73,7 @@ test("shows hints gently and ignores a rapid duplicate correct tap", async ({ pa
     element.click();
   });
 
-  await expect(page.locator(".play-footer").getByText("Question 2 of 10", { exact: true })).toBeVisible({ timeout: 4_000 });
+  await expect(page.getByTestId("number-round")).toHaveAttribute("data-round", "2", { timeout: 4_000 });
   const saved = await page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "{}"), STORAGE_KEY);
   expect(saved.totalQuestions).toBe(1);
   expect(saved.stars).toBe(1);
@@ -173,7 +171,7 @@ test("restart asks for confirmation and safely resets active level progress", as
   await expect(page.getByRole("heading", { name: "Start this level again?" })).toBeVisible();
   await page.getByRole("button", { name: "Yes, restart" }).click();
 
-  await expect(page.locator(".play-footer").getByText("Question 1 of 10", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("number-round")).toHaveAttribute("data-round", "1");
   const saved = await page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "{}"), STORAGE_KEY);
   expect(saved.totalQuestions).toBe(0);
   expect(saved.stars).toBe(0);
@@ -222,8 +220,6 @@ test("remains playable when speech synthesis is unavailable", async ({ page }) =
 
   const target = (await page.locator(".target-number").innerText()).trim();
   await page.getByRole("button", { name: `Number ${target}` }).click();
-  await expect(page.locator(".play-footer").getByText("Question 2 of 10", { exact: true })).toBeVisible({
-    timeout: 4_000,
-  });
+  await expect(page.getByTestId("number-round")).toHaveAttribute("data-round", "2", { timeout: 4_000 });
   expect(pageErrors).toEqual([]);
 });
