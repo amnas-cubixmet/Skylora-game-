@@ -8,12 +8,12 @@ import { GuideCharacter, Icon, Picture, WorldScenery, type GuideMood } from './A
 import { LetterLearning } from './LetterLearning';
 import { AdventureHome } from './AdventureHome';
 import { ParentView } from './ParentView';
-import { AudioButton, HintButton, LetterCard, SectionLabel, primary, secondary } from './Controls';
+import { AudioButton, LetterCard, SectionLabel, primary, secondary } from './Controls';
 import { useAdventure } from './useAdventure';
 import { BADGES, LEVELS, letter } from '../../lib/english/content';
 import { emit } from '../../lib/english/analytics';
 export function EnglishAdventure(){
- const game=useAdventure();const {state,act,start,select,hint,replay,listening,audioAvailable}=game;
+ const game=useAdventure();const {state,act,start,select,replay,listening,audioAvailable}=game;
  const {progress:p,status,question:q}=state;
  const [parents,setParents]=useState(false),[tutorialSolved,setTutorialSolved]=useState(false),[tutorialMessage,setTutorialMessage]=useState('Can you find A?'),[switchLevel,setSwitchLevel]=useState<number|null>(null);
  const pendingLevel=useRef<number|null>(null);const heading=useRef<HTMLHeadingElement>(null);const completedHeading=useRef<HTMLHeadingElement>(null);
