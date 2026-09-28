@@ -375,6 +375,15 @@ body.skylora-gameplay-active {
     padding-bottom: 10px !important;
   }
 
+  .skylora-sound-round > p:last-child {
+    display: none;
+  }
+
+  .skylora-sound-target-picture {
+    width: 82px !important;
+    height: 82px !important;
+  }
+
   .skylora-sound-round .skylora-choice-card {
     min-height: 86px !important;
     padding-top: 8px !important;
