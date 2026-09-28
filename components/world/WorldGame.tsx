@@ -334,12 +334,11 @@ export function WorldGame({ game }: { game: Game }) {
           data-testid="world-round"
           data-round={q.id}
         >
-          <div className="world-round-top">
-            <span className="world-eyebrow">{game.title}</span>
+          <div className="world-round-top skylora-round-progress">
             <div
               className="world-gems"
               role="img"
-              aria-label={`${session.index + Number(s.correct)} of ${SESSION_LENGTH} discoveries`}
+              aria-label={`Progress: ${session.index + Number(s.correct)} of ${SESSION_LENGTH}`}
             >
               {Array.from({ length: SESSION_LENGTH }, (_, i) => (
                 <span
@@ -357,27 +356,28 @@ export function WorldGame({ game }: { game: Game }) {
           <h1 ref={heading} tabIndex={-1}>
             {q.instruction}
           </h1>
-          <div className="world-round-controls">
+          <div className="world-round-controls skylora-context-actions">
             <button
-              className={`world-secondary ${speaking ? "listening" : ""}`}
+              className={`skylora-context-button ${speaking ? "listening" : ""}`}
               disabled={!p.settings.voice}
               onClick={replay}
+              aria-label={speaking ? "Playing instruction" : "Replay instruction"}
+              title="Replay"
             >
-              ◖)) {speaking ? "Listening…" : "Replay audio"}
+              🔊
             </button>
             <button
-              className="world-secondary"
+              className="skylora-context-button"
               onClick={hint}
               disabled={status !== "PLAYING"}
+              aria-label="Show a hint"
+              title="Hint"
             >
-              ✧ Hint
+              ✨
             </button>
           </div>
           {(!p.settings.voice || audioError) && (
-            <p className="world-note" role="status">
-              {audioError ? "Voice is unavailable." : "Voice is off."} A visual
-              clue is ready. This counts as supported practice.
-            </p>
+            <span className="sr-only" role="status">Visual clue enabled.</span>
           )}
           <ActivityArea
             key={q.id}
@@ -397,19 +397,9 @@ export function WorldGame({ game }: { game: Game }) {
             className={`world-feedback ${s.correct ? "positive" : ""}`}
           >
             {s.correct ? "✓ " : ""}
-            {s.feedback || "Look, listen and take your time."}
+            {s.feedback || ""}
           </div>
-          {s.correct && (
-            <button
-              className="world-primary"
-              onClick={() => {
-                roundSeen.current = "";
-                act({ type: "NEXT" });
-              }}
-            >
-              {session.index === 7 ? "Collect my badge" : "Next discovery"} →
-            </button>
-          )}
+          {s.correct && <span className="skylora-auto-next" aria-hidden="true">✨</span>}
         </section>
       )}
       {status === "GAME_COMPLETE" && (
