@@ -50,12 +50,12 @@ export function GameShell({
   const shellClass = gameplay
     ? "skylora-gameplay-shell"
     : adventure
-      ? "relative min-h-screen min-h-svh min-h-dvh overflow-x-clip bg-[#faf8f2] text-ink"
+      ? "world-adventure-shell relative min-h-screen min-h-svh min-h-dvh overflow-x-clip bg-[#faf8f2] text-ink"
       : ui["game-shell"];
   const stageClass = gameplay
     ? "skylora-gameplay-stage"
     : adventure
-      ? "relative mx-auto w-full max-w-6xl px-3 py-3 sm:px-6 sm:py-8"
+      ? "world-adventure-stage relative mx-auto w-full"
       : ui["game-stage"];
   const controlClass = gameplay ? "skylora-gameplay-control" : ui["icon-button"];
 
