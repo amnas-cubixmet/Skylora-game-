@@ -574,159 +574,156 @@ body.skylora-gameplay-active {
     overflow-x: clip;
   }
 
-  .english-letter-learning > nav {
+  .english-letter-learning .alphabet-nav {
     margin-bottom: 12px;
     gap: 8px;
   }
 
-  .english-letter-learning > nav > a,
-  .english-letter-learning > nav > button {
+  .english-letter-learning .alphabet-nav > a,
+  .english-letter-learning .alphabet-nav > button {
     min-height: 44px;
     font-size: 0.76rem;
   }
 
-  .english-letter-learning > div:first-of-type {
-    border-radius: 24px;
+  .english-letter-learning .alphabet-book-intro {
+    overflow: hidden;
     padding: 18px 16px;
+    border-radius: 24px;
   }
 
-  .english-letter-learning > div:first-of-type .world-guide,
-  .english-letter-learning > div:first-of-type svg {
-    max-width: 64px;
+  .english-letter-learning .alphabet-book-intro > svg {
+    display: none;
   }
 
-  .english-letter-learning > div:first-of-type h1 {
+  .english-letter-learning .alphabet-book-intro h1 {
     margin-top: 8px;
     font-size: 1.9rem;
     line-height: 1.08;
   }
 
-  .english-letter-learning > div:first-of-type p {
+  .english-letter-learning .alphabet-book-intro p {
     margin-top: 10px;
-    font-size: 0.88rem;
-    line-height: 1.55;
+    font-size: 0.86rem;
+    line-height: 1.5;
   }
 
-  .english-letter-learning > div.my-7 {
+  .english-letter-learning .alphabet-letter-grid {
     width: 100%;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
-    margin-top: 18px;
-    margin-bottom: 18px;
+    margin: 18px 0;
   }
 
-  .english-letter-learning > div.my-7 > button {
+  .english-letter-learning .alphabet-letter-grid > button {
     min-width: 0;
     min-height: 86px;
-    padding: 8px 4px;
+    padding: 8px 3px;
     border-radius: 20px;
   }
 
-  .english-letter-learning > div.my-7 > button > span:first-child {
-    font-size: 1.7rem;
+  .english-letter-learning .alphabet-letter-grid > button > span:first-child {
+    font-size: 1.68rem;
     line-height: 1;
     white-space: nowrap;
   }
 
-  .english-letter-learning > div.my-7 > button > span:first-child span {
+  .english-letter-learning .alphabet-letter-grid > button > span:first-child span {
     margin-left: 2px;
   }
 
-  .english-letter-learning > div.my-7 > button > span:last-child {
+  .english-letter-learning .alphabet-letter-grid > button > span:last-child {
     margin-top: 8px;
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     line-height: 1.15;
   }
 
-  .english-letter-learning > div.rounded-3xl.border.border-border.bg-white.p-6 {
+  .english-letter-learning .alphabet-practice-card {
     padding: 18px 16px;
     border-radius: 22px;
   }
 
-  .english-letter-learning > div.rounded-3xl.border.border-border.bg-white.p-6 h2 {
+  .english-letter-learning .alphabet-practice-card h2 {
     font-size: 1.08rem;
   }
 
-  .english-letter-learning > div.rounded-3xl.border.border-border.bg-white.p-6 p {
+  .english-letter-learning .alphabet-practice-card p {
     font-size: 0.82rem;
     line-height: 1.5;
   }
 
-  .english-letter-learning > div.rounded-3xl.border.border-border.bg-white.p-6 button {
+  .english-letter-learning .alphabet-practice-card button {
     width: 100%;
   }
 
-  /* Selected-letter hero */
-  .english-letter-learning > div.rounded-\[32px\].bg-\[\#eee8f6\].p-6.text-center {
+  .english-letter-learning .alphabet-letter-hero {
+    overflow: hidden;
     padding: 18px 14px;
     border-radius: 24px;
-    overflow: hidden;
   }
 
-  .english-letter-learning > div.rounded-\[32px\].bg-\[\#eee8f6\].p-6.text-center > p:first-child {
+  .english-letter-learning .alphabet-letter-hero > p:first-child {
     font-size: 0.64rem;
     letter-spacing: 0.12em;
   }
 
-  .english-letter-learning > div.rounded-\[32px\].bg-\[\#eee8f6\].p-6.text-center h1 {
+  .english-letter-learning .alphabet-letter-hero h1 {
     margin: 8px 0 10px;
-    font-size: 4.25rem;
-    line-height: 0.92;
+    font-size: 4rem;
+    line-height: 0.94;
     letter-spacing: -0.05em;
     white-space: nowrap;
   }
 
-  .english-letter-learning > div.rounded-\[32px\].bg-\[\#eee8f6\].p-6.text-center button {
+  .english-letter-learning .alphabet-letter-hero button {
     min-height: 48px;
     padding-inline: 16px !important;
   }
 
-  .english-letter-learning > div.rounded-\[32px\].bg-\[\#eee8f6\].p-6.text-center > p:last-child {
+  .english-letter-learning .alphabet-letter-hero > p:last-child {
     margin-top: 12px;
     font-size: 0.78rem;
     line-height: 1.45;
   }
 
-  /* Word discovery cards */
-  .english-letter-learning > div.my-6 {
+  .english-letter-learning .alphabet-word-grid {
     width: 100%;
     grid-template-columns: 1fr;
     gap: 10px;
-    margin-top: 14px;
-    margin-bottom: 14px;
+    margin: 14px 0;
   }
 
-  .english-letter-learning > div.my-6 > button {
-    min-height: 136px;
+  .english-letter-learning .alphabet-word-grid > button {
+    min-width: 0;
+    min-height: 132px;
     gap: 8px;
     padding: 14px;
     border-radius: 22px;
   }
 
-  .english-letter-learning > div.my-6 > button img {
+  .english-letter-learning .alphabet-word-grid > button img {
     width: 56px;
     height: 56px;
   }
 
-  .english-letter-learning > div.my-6 > button > span:nth-of-type(1) {
+  .english-letter-learning .alphabet-word-grid > button > span:first-of-type {
     font-size: 1.08rem;
   }
 
-  .english-letter-learning > div.my-6 > button > span:nth-of-type(2) {
+  .english-letter-learning .alphabet-word-grid > button > span:last-of-type {
     font-size: 0.7rem;
   }
 
-  .english-letter-learning > div.flex.flex-wrap.justify-center.gap-3 {
+  .english-letter-learning .alphabet-letter-actions {
     display: grid;
     grid-template-columns: 1fr;
     gap: 8px;
   }
 
-  .english-letter-learning > div.flex.flex-wrap.justify-center.gap-3 > button {
+  .english-letter-learning .alphabet-letter-actions > button {
     width: 100%;
   }
 
-  .english-letter-learning > p.mt-8 {
+  .english-letter-learning .alphabet-footnote {
     margin-top: 20px;
     padding-inline: 6px;
     line-height: 1.4;
