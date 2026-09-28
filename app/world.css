@@ -1045,3 +1045,899 @@
   margin: 30px auto 10px;
   display: block;
 }
+
+/* SKYLORA HOME UI RESET 2026 */
+.learning-world {
+  --world-purple: #6756c7;
+  --world-purple-dark: #4f419f;
+  --world-purple-soft: #ded7ff;
+  --world-cream: #f7f5ff;
+  --world-surface: #ffffff;
+  --world-ink: #26213f;
+  --world-muted: #6f6982;
+  --world-border: #e4def4;
+  --world-shadow: 0 14px 40px rgba(63, 51, 105, 0.10);
+  --world-radius-lg: 28px;
+  --world-radius-md: 22px;
+  --world-content: 1240px;
+  color: var(--world-ink);
+  font-family: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.learning-world main.world-adventure-shell,
+.learning-world main {
+  background:
+    radial-gradient(circle at 8% 7%, rgba(222, 215, 255, 0.52), transparent 28rem),
+    radial-gradient(circle at 92% 84%, rgba(255, 226, 151, 0.26), transparent 25rem),
+    var(--world-cream);
+}
+
+.learning-world .world-adventure-stage {
+  width: min(var(--world-content), 100%);
+  margin: 0 auto;
+  padding: 0 32px 72px;
+}
+
+.learning-world .game-header {
+  min-height: 72px;
+  padding: 10px max(16px, calc((100vw - var(--world-content)) / 2 + 32px));
+  border-bottom: 1px solid rgba(103, 86, 199, 0.09);
+  background: rgba(247, 245, 255, 0.90);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.learning-world .brand-lockup {
+  flex: 0 0 auto;
+}
+
+.learning-world .brand-name {
+  color: var(--world-purple);
+  font-size: 0.9rem;
+  font-weight: 950;
+  letter-spacing: 0.17em;
+}
+
+.learning-world .game-name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.learning-world .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.learning-world .world-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  padding: 0;
+}
+
+.learning-world .world-nav a {
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 16px;
+  color: var(--world-muted);
+  font-size: 0.82rem;
+  font-weight: 850;
+  text-decoration: none;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.learning-world .world-nav a:hover {
+  color: var(--world-purple-dark);
+  background: rgba(255, 255, 255, 0.82);
+  transform: translateY(-1px);
+}
+
+.learning-world .world-nav-icon {
+  display: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.learning-world .world-hero {
+  min-height: 548px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(340px, 0.82fr);
+  align-items: center;
+  gap: clamp(40px, 6vw, 88px);
+  padding: 48px 0 58px;
+}
+
+.learning-world .world-hero-copy {
+  min-width: 0;
+}
+
+.learning-world .world-eyebrow {
+  margin: 0;
+  color: var(--world-purple);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.learning-world .world-hero h1 {
+  max-width: 720px;
+  margin: 18px 0 20px;
+  color: var(--world-ink);
+  font-size: clamp(3.5rem, 5.2vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.065em;
+  line-height: 1.01;
+}
+
+.learning-world .world-hero p:not(.world-eyebrow) {
+  max-width: 540px;
+  margin: 0;
+  color: var(--world-muted);
+  font-size: clamp(1.02rem, 1.5vw, 1.125rem);
+  line-height: 1.68;
+}
+
+.learning-world .world-actions {
+  gap: 12px;
+  margin: 28px 0 14px;
+}
+
+.learning-world .world-primary,
+.learning-world .world-secondary {
+  min-height: 56px;
+  border-radius: 18px;
+  padding: 0 22px !important;
+  font-size: 0.92rem;
+  font-weight: 900;
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.learning-world .world-primary {
+  min-width: 160px;
+  border: 1px solid transparent;
+  background: var(--world-purple);
+  box-shadow: 0 10px 24px rgba(103, 86, 199, 0.18);
+}
+
+.learning-world .world-secondary {
+  border: 1px solid var(--world-border);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--world-purple-dark);
+}
+
+.learning-world .world-primary:hover,
+.learning-world .world-secondary:hover {
+  transform: translateY(-2px);
+}
+
+.learning-world .world-primary:active,
+.learning-world .world-secondary:active {
+  transform: scale(0.96);
+}
+
+.learning-world .world-note {
+  display: inline-block;
+  color: var(--world-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.learning-world .world-hero-art {
+  height: 430px;
+  max-width: 470px;
+  width: 100%;
+  justify-self: end;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 42% 42% 30% 30%;
+  background:
+    radial-gradient(circle at 50% 90%, rgba(199, 224, 191, 0.95), transparent 32%),
+    radial-gradient(circle at 38% 36%, rgba(228, 213, 242, 0.98), transparent 42%),
+    radial-gradient(circle at 72% 28%, rgba(250, 230, 189, 0.72), transparent 35%),
+    rgba(255, 255, 255, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+  padding-bottom: 38px;
+}
+
+.learning-world .world-hero-art .world-guide {
+  animation: guide-float 4.8s ease-in-out infinite;
+}
+
+.learning-world .world-hero-art .world-guide svg {
+  width: 205px;
+}
+
+.learning-world .world-orbit {
+  border: 1px solid rgba(255,255,255,.9);
+  box-shadow: 0 12px 30px rgba(63, 51, 105, 0.09);
+}
+
+.learning-world .world-orbit.one {
+  width: 92px;
+  height: 92px;
+  top: 64px;
+  left: 8%;
+}
+
+.learning-world .world-orbit.two {
+  width: 104px;
+  height: 78px;
+  top: 28px;
+  right: 8%;
+}
+
+.learning-world .world-orbit.three {
+  width: 68px;
+  height: 68px;
+  right: 7%;
+  bottom: 56px;
+}
+
+.learning-world .world-orbit.four,
+.learning-world .world-orbit.five {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 1rem;
+  color: #8d6b1f;
+  background: #fff3cb;
+}
+
+.learning-world .world-orbit.four {
+  left: 16%;
+  bottom: 82px;
+  transform: rotate(8deg);
+}
+
+.learning-world .world-orbit.five {
+  top: 168px;
+  right: 2%;
+  color: var(--world-purple);
+  background: #efeaff;
+  transform: rotate(-8deg);
+}
+
+.learning-world .world-section-heading {
+  margin: 0 0 24px;
+  align-items: flex-end;
+}
+
+.learning-world .world-section-heading h2,
+.learning-world .world-panel h2,
+.learning-world .world-practice h2,
+.learning-world .world-progress-cta h2 {
+  margin: 6px 0 0;
+  color: var(--world-ink);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.learning-world .world-section-heading > span {
+  color: var(--world-muted);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.learning-world .world-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 88px;
+}
+
+.learning-world .world-card {
+  position: relative;
+  min-height: 310px;
+  overflow: hidden;
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,.76);
+  border-radius: var(--world-radius-lg);
+  box-shadow: 0 12px 34px rgba(63, 51, 105, 0.06);
+  text-decoration: none;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.learning-world .world-card::after {
+  content: "";
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  right: -72px;
+  top: -74px;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 50%;
+  background: rgba(255,255,255,.16);
+}
+
+.learning-world .world-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 42px rgba(63, 51, 105, 0.09);
+}
+
+.learning-world .world-card-number {
+  position: relative;
+  z-index: 1;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.learning-world .world-symbol {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  margin: 36px 0 26px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.62);
+  font-size: 3.25rem;
+  line-height: 1;
+}
+
+.learning-world .world-card h2 {
+  position: relative;
+  z-index: 1;
+  font-size: 1.65rem;
+  font-weight: 900;
+}
+
+.learning-world .world-card p {
+  position: relative;
+  z-index: 1;
+  max-width: 270px;
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.58;
+}
+
+.learning-world .world-card-footer {
+  position: relative;
+  z-index: 1;
+  margin-top: 24px;
+  padding-top: 16px;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.learning-world .world-practice {
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+  margin: 0 0 88px;
+  padding: clamp(28px, 4vw, 46px);
+  border: 1px solid var(--world-border);
+  border-radius: var(--world-radius-lg);
+  background:
+    radial-gradient(circle at 90% 12%, rgba(222, 215, 255, 0.9), transparent 15rem),
+    #ffffff;
+  box-shadow: var(--world-shadow);
+}
+
+.learning-world .world-practice::after {
+  content: "✦";
+  position: absolute;
+  right: 7%;
+  bottom: -48px;
+  color: rgba(103, 86, 199, 0.08);
+  font-size: 11rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.learning-world .world-practice-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 660px;
+}
+
+.learning-world .world-practice p {
+  max-width: 560px;
+  margin: 10px 0 0;
+  color: var(--world-muted);
+  line-height: 1.58;
+}
+
+.learning-world .world-practice .world-primary {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+}
+
+.learning-world .world-classics {
+  margin: 0 0 88px;
+}
+
+.learning-world .familiar-game-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.learning-world .familiar-game-card {
+  min-width: 0;
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid var(--world-border);
+  border-radius: 26px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 10px 28px rgba(63, 51, 105, 0.06);
+  color: var(--world-ink);
+  text-decoration: none;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.learning-world .familiar-game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--world-shadow);
+}
+
+.learning-world .familiar-game-card.is-locked {
+  opacity: 0.7;
+}
+
+.learning-world .familiar-game-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.learning-world .familiar-game-icon {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background: var(--world-purple-soft);
+  color: var(--world-purple-dark);
+  font-size: 2.3rem;
+  font-weight: 950;
+  letter-spacing: -0.07em;
+}
+
+.learning-world .familiar-game-icon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.learning-world .familiar-game-status {
+  max-width: 132px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #f3f0fb;
+  color: var(--world-muted);
+  font-size: 0.68rem;
+  font-weight: 850;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.learning-world .familiar-game-category {
+  margin: 24px 0 6px;
+  color: var(--world-purple);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.learning-world .familiar-game-card h3 {
+  margin: 0;
+  color: var(--world-ink);
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.learning-world .familiar-game-copy {
+  flex: 1;
+  margin: 12px 0 0;
+  color: var(--world-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.learning-world .familiar-game-action {
+  min-height: 50px;
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 17px;
+  background: var(--world-purple);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.learning-world .world-progress-cta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 26px;
+  margin: 0 0 60px;
+  padding: 28px 30px;
+  border: 1px solid var(--world-border);
+  border-radius: var(--world-radius-lg);
+  background: rgba(255,255,255,.74);
+}
+
+.learning-world .world-progress-marks {
+  display: flex;
+  gap: 6px;
+}
+
+.learning-world .world-progress-marks span {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: var(--world-purple-dark);
+  background: #ece7ff;
+  font-weight: 900;
+}
+
+.learning-world .world-progress-marks span:nth-child(2) {
+  background: #e6f5e9;
+  color: #4f8a63;
+  transform: translateY(-7px);
+}
+
+.learning-world .world-progress-marks span:nth-child(3) {
+  background: #fff0c7;
+  color: #8b6b1f;
+}
+
+.learning-world .world-progress-copy p:not(.world-eyebrow) {
+  max-width: 680px;
+  margin: 8px 0 0;
+  color: var(--world-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.learning-world .world-footer {
+  min-height: 80px;
+  padding: 18px 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-top: 1px solid rgba(103, 86, 199, 0.08);
+  color: var(--world-muted);
+  font-size: 0.78rem;
+}
+
+.learning-world .world-footer strong {
+  color: var(--world-purple);
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+}
+
+.learning-world .world-panel,
+.learning-world .world-game-card {
+  border-color: var(--world-border);
+  box-shadow: 0 8px 26px rgba(63, 51, 105, 0.05);
+}
+
+@media (max-width: 1023px) {
+  .learning-world .world-adventure-stage {
+    padding-inline: 24px;
+  }
+
+  .learning-world .game-header {
+    padding-inline: 24px;
+  }
+
+  .learning-world .world-hero {
+    min-height: 500px;
+    grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr);
+    gap: 34px;
+  }
+
+  .learning-world .world-hero-art {
+    height: 370px;
+  }
+
+  .learning-world .world-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learning-world .world-card:last-child {
+    grid-column: 1 / -1;
+    min-height: 250px;
+  }
+
+  .learning-world .familiar-game-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learning-world .familiar-game-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 639px) {
+  .learning-world .world-adventure-stage {
+    padding: 0 16px 44px;
+  }
+
+  .learning-world .game-header {
+    min-height: 66px;
+    padding: 8px 12px;
+  }
+
+  .learning-world .brand-name {
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+  }
+
+  .learning-world .header-actions {
+    gap: 4px;
+  }
+
+  .learning-world .world-nav {
+    gap: 2px;
+  }
+
+  .learning-world .world-nav a {
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    padding: 0;
+    justify-content: center;
+    border: 1px solid rgba(228, 222, 244, 0.72);
+    background: rgba(255,255,255,.68);
+  }
+
+  .learning-world .world-nav-icon {
+    display: inline;
+  }
+
+  .learning-world .world-nav-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .learning-world .icon-button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .learning-world .world-hero {
+    min-height: 0;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 42px 0 54px;
+  }
+
+  .learning-world .world-hero h1 {
+    max-width: 520px;
+    margin: 14px 0 16px;
+    font-size: clamp(2.25rem, 11vw, 2.65rem);
+    line-height: 1.02;
+  }
+
+  .learning-world .world-hero p:not(.world-eyebrow) {
+    font-size: 0.98rem;
+    line-height: 1.62;
+  }
+
+  .learning-world .world-hero .world-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 24px 0 14px;
+  }
+
+  .learning-world .world-hero .world-primary,
+  .learning-world .world-hero .world-secondary {
+    width: 100%;
+  }
+
+  .learning-world .world-hero-art {
+    display: grid;
+    justify-self: stretch;
+    max-width: none;
+    height: 270px;
+    border-radius: 30px;
+    padding-bottom: 22px;
+  }
+
+  .learning-world .world-hero-art .world-guide svg {
+    width: 132px;
+  }
+
+  .learning-world .world-orbit.one {
+    width: 68px;
+    height: 68px;
+    top: 46px;
+    left: 8%;
+    font-size: 1.45rem;
+  }
+
+  .learning-world .world-orbit.two {
+    width: 76px;
+    height: 58px;
+    top: 22px;
+    right: 9%;
+    font-size: 1.35rem;
+  }
+
+  .learning-world .world-orbit.three {
+    width: 52px;
+    height: 52px;
+    right: 8%;
+    bottom: 34px;
+    font-size: 1.45rem;
+  }
+
+  .learning-world .world-orbit.four {
+    left: 13%;
+    bottom: 44px;
+  }
+
+  .learning-world .world-orbit.five {
+    top: 116px;
+    right: 2%;
+  }
+
+  .learning-world .world-section-heading {
+    margin-bottom: 18px;
+  }
+
+  .learning-world .world-section-heading > span {
+    display: none;
+  }
+
+  .learning-world .world-section-heading h2,
+  .learning-world .world-panel h2,
+  .learning-world .world-practice h2,
+  .learning-world .world-progress-cta h2 {
+    font-size: 1.75rem;
+  }
+
+  .learning-world .world-cards {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 54px;
+  }
+
+  .learning-world .world-card,
+  .learning-world .world-card:last-child {
+    grid-column: auto;
+    min-height: 250px;
+    padding: 22px;
+  }
+
+  .learning-world .world-symbol {
+    position: static;
+    margin: 28px 0 20px;
+    padding: 10px 12px;
+    font-size: 2.7rem;
+  }
+
+  .learning-world .world-card h2 {
+    margin: 0;
+    font-size: 1.45rem;
+  }
+
+  .learning-world .world-card p {
+    max-width: 280px;
+  }
+
+  .learning-world .world-practice {
+    display: block;
+    min-height: 0;
+    margin-bottom: 54px;
+    padding: 24px 20px;
+  }
+
+  .learning-world .world-practice .world-primary {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .learning-world .world-classics {
+    margin-bottom: 54px;
+  }
+
+  .learning-world .familiar-game-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .learning-world .familiar-game-card,
+  .learning-world .familiar-game-card:last-child {
+    grid-column: auto;
+    min-height: 285px;
+    padding: 20px;
+  }
+
+  .learning-world .familiar-game-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+  }
+
+  .learning-world .world-progress-cta {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-bottom: 40px;
+    padding: 22px 20px;
+  }
+
+  .learning-world .world-progress-marks span {
+    width: 40px;
+    height: 40px;
+  }
+
+  .learning-world .world-progress-cta .world-secondary {
+    width: 100%;
+  }
+
+  .learning-world .world-footer {
+    min-height: 96px;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .learning-world .game-header {
+    padding-inline: 8px;
+  }
+
+  .learning-world .brand-name {
+    font-size: 0.7rem;
+  }
+
+  .learning-world .world-nav a,
+  .learning-world .icon-button {
+    width: 48px;
+    min-width: 48px;
+  }
+
+  .learning-world .header-actions {
+    gap: 2px;
+  }
+
+  .learning-world .world-hero h1 {
+    font-size: 2.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learning-world .world-hero-art .world-guide {
+    animation: none;
+  }
+}
