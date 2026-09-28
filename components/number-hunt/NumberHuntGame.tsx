@@ -586,13 +586,13 @@ export function NumberHuntGame() {
   const milestone = showSuccess && state.round === 4;
   const feedback = showSuccess
     ? milestone
-      ? "Amazing! Keep going!"
-      : `Great! That is ${question.target}.`
+      ? "Amazing!"
+      : `Great! ${question.target}!`
     : state.status === "HINT"
-      ? "Take another look. A gentle hint is here."
+      ? "Look again"
       : state.status === "TRY_AGAIN"
-        ? "Try again. You can do it."
-        : "Tap the matching number.";
+        ? "Try again"
+        : "";
 
   return (
     <GameShell
@@ -606,12 +606,9 @@ export function NumberHuntGame() {
       onPause={pauseGame}
     >
       <section className={`${ui["play-area"]} skylora-activity-screen skylora-activity-card state-${state.status.toLowerCase()}`}>
-        <div className={ui["play-topline"]}>
-          <span className={ui["level-pill"]}>Level {state.level}</span>
-          <span className={ui["stars-pill"]} aria-label={`${state.sessionStats.stars} stars this level`}>★ {state.sessionStats.stars}</span>
+        <div className="skylora-round-progress" aria-label={`Progress: ${state.round} of 10`}>
+          <ProgressDots current={state.round} total={10} />
         </div>
-
-        <ProgressDots current={state.round} total={10} />
 
         <div className={ui["instruction-block"]}>
           <div className={ui["instruction-line"]}>
@@ -627,7 +624,6 @@ export function NumberHuntGame() {
               aria-label="Repeat the number instruction"
             >
               <span aria-hidden="true">🔊</span>
-              <span>Repeat</span>
             </button>
           </div>
           <div className={ui["target-number"]} aria-label={`Target number ${question.target}`}>{question.target}</div>
@@ -650,10 +646,7 @@ export function NumberHuntGame() {
           ))}
         </div>
 
-        <div className={ui["play-footer"]}>
-          <span>Question {state.round + 1} of 10</span>
-          <span>No timer • Take your time</span>
-        </div>
+        
       </section>
 
       {state.status === "PAUSED" ? (
