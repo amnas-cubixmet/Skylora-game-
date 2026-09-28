@@ -11,6 +11,7 @@ type GameShellProps = {
   adventure?: boolean;
   gameplay?: boolean;
   inert?: boolean;
+  headerContent?: ReactNode;
   onBack?: () => void;
   backHref?: string;
   backLabel?: string;
@@ -30,6 +31,7 @@ export function GameShell({
   adventure = false,
   gameplay = false,
   inert = false,
+  headerContent,
   onBack,
   backHref,
   backLabel = "Back",
@@ -95,6 +97,7 @@ export function GameShell({
         )}
 
         <div className={gameplay ? "skylora-gameplay-actions" : ui["header-actions"]}>
+          {!gameplay ? headerContent : null}
           {onToggleSound && typeof soundEnabled === "boolean" ? (
             <button
               className={controlClass}
