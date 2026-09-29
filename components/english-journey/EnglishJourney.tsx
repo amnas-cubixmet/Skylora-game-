@@ -34,8 +34,11 @@ export function EnglishJourney() {
   const hintStage = attempts >= 3 ? 3 : attempts >= 2 ? 2 : attempts >= 1 ? 1 : 0;
 
   useEffect(() => {
-    setProgress(loadJourneyProgress());
+    const loadFrame = window.requestAnimationFrame(() => {
+      setProgress(loadJourneyProgress());
+    });
     return () => {
+      window.cancelAnimationFrame(loadFrame);
       if (transitionRef.current) window.clearTimeout(transitionRef.current);
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
