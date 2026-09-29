@@ -1,71 +1,87 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GameShell } from "../game/GameShell";
-import { GuideCharacter } from "../english/Art";
-import { JOURNEY_WORLDS, STARTER_MISSION } from "../../lib/english-journey/content";
+import { GuideCharacter, Picture } from "../english/Art";
+import { TracePad } from "./TracePad";
+import {
+  ALL_LEVELS,
+  JOURNEY_WORLDS,
+  LETTER_LEVELS,
+  LEVEL_BY_ID,
+  firstIncompleteLevel,
+  levelsForWorld,
+} from "../../lib/english-journey/content";
 import {
   freshJourneyProgress,
   loadJourneyProgress,
   saveJourneyProgress,
 } from "../../lib/english-journey/storage";
-import type { JourneyProgress } from "../../lib/english-journey/types";
+import type {
+  JourneyActivity,
+  JourneyLevel,
+  JourneyProgress,
+  SkillMetric,
+} from "../../lib/english-journey/types";
 import styles from "./EnglishJourney.module.css";
 
-type Screen = "home" | "playing" | "complete";
+type Screen = "home" | "levels" | "playing" | "complete";
+type PickedToken = { token: string; index: number };
+
+function emptyMetric(): SkillMetric {
+  return { encounters: 0, firstTryCorrect: 0, attempts: 0, hints: 0 };
+}
+
+function completionKey(level: JourneyLevel, worldId: number) {
+  return worldId === 2 ? `writing:${level.id}` : level.id;
+}
 
 export function EnglishJourney() {
   const [screen, setScreen] = useState<Screen>("home");
   const [progress, setProgress] = useState<JourneyProgress>(freshJourneyProgress);
-  const [roundIndex, setRoundIndex] = useState(0);
+  const [worldId, setWorldId] = useState(1);
+  const [level, setLevel] = useState<JourneyLevel>(LETTER_LEVELS[0]);
+  const [activities, setActivities] = useState<JourneyActivity[]>(LETTER_LEVELS[0].activities.filter((a) => a.world === 1));
+  const [activityIndex, setActivityIndex] = useState(0);
   const [attempts, setAttempts] = useState(0);
-  const [totalAttempts, setTotalAttempts] = useState(0);
-  const [firstTryCorrect, setFirstTryCorrect] = useState(0);
+  const [hints, setHints] = useState(0);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const [correctId, setCorrectId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("");
+  const [picked, setPicked] = useState<PickedToken[]>([]);
+  const [speaking, setSpeaking] = useState(false);
+  const [firstTryCorrect, setFirstTryCorrect] = useState(0);
+  const [totalAttempts, setTotalAttempts] = useState(0);
   const [storageAvailable, setStorageAvailable] = useState(true);
-  const lockedRef = useRef(false);
-  const transitionRef = useRef<number | null>(null);
+  const lockRef = useRef(false);
+  const timerRef = useRef<number | null>(null);
 
-  const round = STARTER_MISSION[roundIndex];
-  const currentWorld = JOURNEY_WORLDS.find((world) => world.id === round?.world);
-  const hintStage = attempts >= 3 ? 3 : attempts >= 2 ? 2 : attempts >= 1 ? 1 : 0;
+  const activity = activities[activityIndex];
+  const world = JOURNEY_WORLDS.find((item) => item.id === worldId) ?? JOURNEY_WORLDS[0];
+  const recommended = useMemo(() => firstIncompleteLevel(progress.completedLevelIds), [progress.completedLevelIds]);
 
   useEffect(() => {
-    const loadFrame = window.requestAnimationFrame(() => {
-      setProgress(loadJourneyProgress());
-    });
+    const frame = window.requestAnimationFrame(() => setProgress(loadJourneyProgress()));
     return () => {
-      window.cancelAnimationFrame(loadFrame);
-      if (transitionRef.current) window.clearTimeout(transitionRef.current);
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      window.cancelAnimationFrame(frame);
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     };
   }, []);
 
-  const masteredCount = useMemo(
-    () => new Set(progress.masteredRoundIds).size,
-    [progress.masteredRoundIds],
-  );
-
   function speak(text: string) {
-    if (!progress.soundEnabled || typeof window === "undefined" || !("speechSynthesis" in window)) {
-      return;
-    }
+    if (!progress.soundEnabled || typeof window === "undefined" || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-IN";
-    utterance.rate = 0.88;
-    utterance.pitch = 1.05;
+    utterance.rate = 0.86;
+    utterance.pitch = 1.03;
     const voices = window.speechSynthesis.getVoices();
-    const voice =
-      voices.find((item) => item.lang.toLowerCase().startsWith("en-in")) ??
-      voices.find((item) => item.lang.toLowerCase().startsWith("en-gb")) ??
-      voices.find((item) => item.lang.toLowerCase().startsWith("en"));
-    if (voice) utterance.voice = voice;
+    utterance.voice =
+      voices.find((voice) => voice.lang.toLowerCase().startsWith("en-in")) ??
+      voices.find((voice) => voice.lang.toLowerCase().startsWith("en-gb")) ??
+      voices.find((voice) => voice.lang.toLowerCase().startsWith("en")) ??
+      null;
     window.speechSynthesis.speak(utterance);
   }
 
@@ -75,166 +91,331 @@ export function EnglishJourney() {
   }
 
   function toggleSound() {
-    const next = { ...progress, soundEnabled: !progress.soundEnabled };
-    if (progress.soundEnabled && typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-    persist(next);
+    if (progress.soundEnabled && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    persist({ ...progress, soundEnabled: !progress.soundEnabled });
   }
 
-  function resetRoundState() {
+  function resetActivity() {
     setAttempts(0);
+    setHints(0);
     setWrongId(null);
     setCorrectId(null);
     setFeedback("");
-    lockedRef.current = false;
+    setPicked([]);
+    setSpeaking(false);
+    lockRef.current = false;
   }
 
-  function startMission() {
-    if (transitionRef.current) window.clearTimeout(transitionRef.current);
-    setRoundIndex(0);
-    setTotalAttempts(0);
+  function activitiesFor(selected: JourneyLevel, selectedWorld: number) {
+    // Alphabet levels intentionally include their handwriting round so A–Z is one
+    // connected teaching session. Writing School reuses only the trace round.
+    if (selectedWorld === 1 && selected.id.startsWith("letter-")) return selected.activities;
+    const filtered = selected.activities.filter((item) => item.world === selectedWorld);
+    return filtered.length ? filtered : selected.activities;
+  }
+
+  function startLevel(levelId: string, selectedWorld = LEVEL_BY_ID[levelId]?.world ?? 1) {
+    const nextLevel = LEVEL_BY_ID[levelId];
+    if (!nextLevel) return;
+    const nextActivities = activitiesFor(nextLevel, selectedWorld);
+    if (!nextActivities.length) return;
+    if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    setWorldId(selectedWorld);
+    setLevel(nextLevel);
+    setActivities(nextActivities);
+    setActivityIndex(0);
     setFirstTryCorrect(0);
-    resetRoundState();
+    setTotalAttempts(0);
+    resetActivity();
     setScreen("playing");
-    window.setTimeout(() => speak(STARTER_MISSION[0].spokenPrompt), 80);
+    window.setTimeout(() => speak(nextActivities[0].spokenPrompt), 100);
   }
 
-  function leaveMission() {
-    if (transitionRef.current) window.clearTimeout(transitionRef.current);
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+  function openWorld(id: number) {
+    setWorldId(id);
+    setScreen("levels");
+  }
+
+  function leaveSession() {
+    if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    resetActivity();
+    setScreen("levels");
+  }
+
+  function recordActivity(item: JourneyActivity, firstTry: boolean, attemptCount: number, hintCount: number) {
+    const nextStats = { ...progress.skillStats };
+    for (const tag of item.masteryTags) {
+      const current = nextStats[tag] ?? emptyMetric();
+      nextStats[tag] = {
+        encounters: current.encounters + 1,
+        firstTryCorrect: current.firstTryCorrect + (firstTry ? 1 : 0),
+        attempts: current.attempts + Math.max(1, attemptCount),
+        hints: current.hints + hintCount,
+      };
     }
-    resetRoundState();
-    setScreen("home");
+    const mastered =
+      firstTry && hintCount === 0
+        ? Array.from(new Set([...progress.masteredActivityIds, item.id]))
+        : progress.masteredActivityIds;
+    const next = { ...progress, skillStats: nextStats, masteredActivityIds: mastered };
+    setProgress(next);
+    setStorageAvailable(saveJourneyProgress(next));
+    return next;
   }
 
-  function finishMission(correctOnFirstTry: number, attemptsMade: number) {
-    const accuracy = Math.round((correctOnFirstTry / STARTER_MISSION.length) * 100);
-    const mastered = STARTER_MISSION.map((item) => item.id);
+  function finishLevel(baseProgress: JourneyProgress, correctFirst: number, attemptsMade: number) {
+    const accuracy = Math.round((correctFirst / Math.max(1, activities.length)) * 100);
+    const key = completionKey(level, worldId);
     const next: JourneyProgress = {
-      ...progress,
-      stars: progress.stars + Math.max(1, correctOnFirstTry),
-      completedMissions: progress.completedMissions + 1,
-      bestAccuracy: Math.max(progress.bestAccuracy, accuracy),
-      masteredRoundIds: Array.from(new Set([...progress.masteredRoundIds, ...mastered])),
+      ...baseProgress,
+      stars: baseProgress.stars + Math.max(1, correctFirst),
+      completedMissions: baseProgress.completedMissions + 1,
+      bestAccuracy: Math.max(baseProgress.bestAccuracy, accuracy),
+      completedLevelIds: Array.from(new Set([...baseProgress.completedLevelIds, key])),
+      lastLevelId: level.id,
     };
     persist(next);
     setTotalAttempts(attemptsMade);
     setScreen("complete");
-    speak("Amazing! Mission complete.");
+    speak("Amazing. Level complete.");
+  }
+
+  function advance(baseProgress: JourneyProgress, firstTry: boolean, attemptsMade: number) {
+    if (!activity || lockRef.current) return;
+    lockRef.current = true;
+    const nextFirst = firstTry ? firstTryCorrect + 1 : firstTryCorrect;
+    setFirstTryCorrect(nextFirst);
+    setFeedback("Great!");
+    speak(activity.reinforcement);
+
+    timerRef.current = window.setTimeout(() => {
+      if (activityIndex + 1 >= activities.length) {
+        finishLevel(baseProgress, nextFirst, attemptsMade);
+        return;
+      }
+      const nextIndex = activityIndex + 1;
+      setActivityIndex(nextIndex);
+      resetActivity();
+      window.setTimeout(() => speak(activities[nextIndex].spokenPrompt), 100);
+    }, 900);
+  }
+
+  function succeed(attemptCount = attempts + 1) {
+    if (!activity || lockRef.current) return;
+    const firstTry = attempts === 0 && hints === 0;
+    const nextAttemptsMade = totalAttempts + Math.max(1, attemptCount);
+    setTotalAttempts(nextAttemptsMade);
+    const nextProgress = recordActivity(activity, firstTry, attemptCount, hints);
+    advance(nextProgress, firstTry, nextAttemptsMade);
   }
 
   function choose(choiceId: string) {
-    if (!round || lockedRef.current) return;
-    const nextAttemptsMade = totalAttempts + 1;
-    setTotalAttempts(nextAttemptsMade);
-
-    if (choiceId !== round.correctId) {
+    if (!activity || lockRef.current) return;
+    if (choiceId !== activity.correctId) {
       const nextAttempts = attempts + 1;
       setAttempts(nextAttempts);
       setWrongId(choiceId);
+      setHints(nextAttempts >= 2 ? 1 : hints);
       setFeedback(nextAttempts >= 2 ? "Look again" : "Try again");
-      speak(nextAttempts >= 2 ? round.spokenPrompt : `Try again. ${round.spokenPrompt}`);
+      speak(nextAttempts >= 2 ? activity.spokenPrompt : `Try again. ${activity.spokenPrompt}`);
+      return;
+    }
+    setCorrectId(choiceId);
+    setWrongId(null);
+    succeed();
+  }
+
+  function pickToken(token: string, index: number) {
+    if (!activity || lockRef.current || picked.some((item) => item.index === index)) return;
+    const next = [...picked, { token, index }];
+    setPicked(next);
+    const answer = activity.answer ?? [];
+    if (next.length < answer.length) return;
+
+    const correct = next.every((item, itemIndex) => item.token === answer[itemIndex]);
+    if (correct) {
+      succeed(attempts + 1);
       return;
     }
 
-    lockedRef.current = true;
-    const firstTry = attempts === 0;
-    const nextFirstTryCorrect = firstTry ? firstTryCorrect + 1 : firstTryCorrect;
-    setFirstTryCorrect(nextFirstTryCorrect);
-    setCorrectId(choiceId);
-    setWrongId(null);
-    setFeedback("Great!");
-    speak(round.reinforcement);
-
-    transitionRef.current = window.setTimeout(() => {
-      if (roundIndex + 1 >= STARTER_MISSION.length) {
-        finishMission(nextFirstTryCorrect, nextAttemptsMade);
-        return;
-      }
-      const nextIndex = roundIndex + 1;
-      setRoundIndex(nextIndex);
-      resetRoundState();
-      window.setTimeout(() => speak(STARTER_MISSION[nextIndex].spokenPrompt), 120);
-    }, 950);
+    const nextAttempts = attempts + 1;
+    setAttempts(nextAttempts);
+    setHints(nextAttempts >= 2 ? 1 : hints);
+    setFeedback(nextAttempts >= 2 ? `Start with “${answer[0]}”` : "Try again");
+    speak("Try again.");
+    timerRef.current = window.setTimeout(() => setPicked([]), 650);
   }
 
-  if (screen === "playing" && round) {
+  function undoToken(index: number) {
+    if (lockRef.current) return;
+    setPicked((current) => current.filter((_, itemIndex) => itemIndex !== index));
+  }
+
+  function passiveComplete() {
+    if (!activity || lockRef.current) return;
+    speak(activity.reinforcement);
+    succeed(1);
+  }
+
+  function speakingTurn() {
+    if (!activity || speaking || lockRef.current) return;
+    setSpeaking(true);
+    setFeedback("Your turn…");
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    timerRef.current = window.setTimeout(() => {
+      setFeedback("Nice speaking!");
+      succeed(1);
+    }, 2600);
+  }
+
+  const worldLevels = levelsForWorld(worldId);
+
+  if (screen === "playing" && activity) {
+    const answer = activity.answer ?? [];
+    const hintToken = attempts >= 2 ? answer[picked.length] : undefined;
     return (
       <GameShell
         gameplay
         gameTitle="English Journey"
-        onBack={leaveMission}
-        backLabel="Back to English Journey"
+        onBack={leaveSession}
+        backLabel="Back to levels"
         soundEnabled={progress.soundEnabled}
         onToggleSound={toggleSound}
       >
-        <section className={styles.playScreen} aria-live="polite">
-          <div className={styles.progressRow} aria-label={`Round ${roundIndex + 1} of ${STARTER_MISSION.length}`}>
-            {STARTER_MISSION.map((item, index) => (
-              <span
-                key={item.id}
-                className={
-                  index < roundIndex
-                    ? styles.progressDone
-                    : index === roundIndex
-                      ? styles.progressCurrent
-                      : styles.progressDot
-                }
-              />
-            ))}
-          </div>
-
-          <div className={styles.worldPill}>
-            <span aria-hidden="true">{currentWorld?.icon}</span>
-            <span>{currentWorld?.shortTitle}</span>
+        <section className={styles.playScreen}>
+          <div className={styles.sessionTop}>
+            <span>{level.code}</span>
+            <div className={styles.progressTrack} aria-label={`Activity ${activityIndex + 1} of ${activities.length}`}>
+              {activities.map((item, index) => (
+                <i
+                  key={item.id}
+                  className={
+                    index < activityIndex
+                      ? styles.progressDone
+                      : index === activityIndex
+                        ? styles.progressCurrent
+                        : styles.progressDot
+                  }
+                />
+              ))}
+            </div>
+            <span>{activityIndex + 1}/{activities.length}</span>
           </div>
 
           <div className={styles.promptArea}>
-            <button
-              type="button"
-              className={styles.replay}
-              onClick={() => speak(round.spokenPrompt)}
-              aria-label="Replay instruction"
-            >
+            <button type="button" className={styles.replay} onClick={() => speak(activity.spokenPrompt)} aria-label="Replay instruction">
               <span aria-hidden="true">🔊</span>
             </button>
-            <h1>{round.prompt}</h1>
+            <div>
+              <span className={styles.skillLabel}>{activity.skill}</span>
+              <h1>{activity.prompt}</h1>
+            </div>
           </div>
 
-          <div className={styles.choiceGrid}>
-            {round.choices.map((choice) => {
-              const isCorrect = correctId === choice.id;
-              const wasWrong = wrongId === choice.id;
-              const isHinted = hintStage >= 2 && choice.id === round.correctId;
-              const isDimmed = hintStage >= 3 && choice.id !== round.correctId && !wasWrong;
-              const toneClass = choice.tone ? styles[`tone${choice.tone[0].toUpperCase()}${choice.tone.slice(1)}`] : "";
-              return (
-                <button
-                  key={choice.id}
-                  type="button"
-                  className={[
-                    styles.choice,
-                    toneClass,
-                    isCorrect ? styles.choiceCorrect : "",
-                    wasWrong ? styles.choiceWrong : "",
-                    isHinted ? styles.choiceHinted : "",
-                    isDimmed ? styles.choiceDimmed : "",
-                  ].filter(Boolean).join(" ")}
-                  onClick={() => choose(choice.id)}
-                  disabled={Boolean(correctId)}
-                  aria-label={choice.label}
-                >
-                  <span className={styles.choiceVisual} aria-hidden="true">{choice.visual}</span>
-                  <span className={styles.choiceLabel}>{choice.label}</span>
+          <div className={styles.activityStage}>
+            {activity.kind === "teach-letter" ? (
+              <button type="button" className={styles.letterMovie} onClick={passiveComplete} aria-label={`Meet letter ${activity.target}`}>
+                <span className={styles.movieLetter}>{activity.target}</span>
+                {activity.target ? <Picture value={activity.target} className={styles.moviePicture} /> : null}
+                <span className={styles.movieWord}>{activity.word}</span>
+                <span className={styles.tapCue}>Tap to meet</span>
+              </button>
+            ) : null}
+
+            {activity.kind === "choice" ? (
+              <div className={styles.choiceGrid}>
+                {(activity.choices ?? []).map((choice) => {
+                  const hinted = attempts >= 2 && choice.id === activity.correctId;
+                  return (
+                    <button
+                      key={choice.id}
+                      type="button"
+                      className={[
+                        styles.choice,
+                        correctId === choice.id ? styles.choiceCorrect : "",
+                        wrongId === choice.id ? styles.choiceWrong : "",
+                        hinted ? styles.choiceHinted : "",
+                        attempts >= 3 && choice.id !== activity.correctId ? styles.choiceDimmed : "",
+                      ].filter(Boolean).join(" ")}
+                      onClick={() => choose(choice.id)}
+                      disabled={Boolean(correctId)}
+                      aria-label={choice.label}
+                    >
+                      {choice.pictureKey ? <Picture value={choice.pictureKey} className={styles.choicePicture} /> : null}
+                      {choice.visual ? <span className={styles.choiceVisual}>{choice.visual}</span> : null}
+                      <span className={styles.choiceLabel}>{choice.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+
+            {activity.kind === "word-builder" || activity.kind === "sentence-builder" || activity.kind === "paragraph-builder" ? (
+              <div className={styles.builder}>
+                {activity.word ? <div className={styles.builderWord}>{activity.word}</div> : null}
+                <div className={activity.kind === "paragraph-builder" ? styles.paragraphSlots : styles.answerSlots}>
+                  {answer.map((token, index) => (
+                    <button
+                      type="button"
+                      key={`${token}-slot-${index}`}
+                      className={styles.answerSlot}
+                      onClick={() => undoToken(index)}
+                      aria-label={picked[index] ? `Remove ${picked[index].token}` : `Empty position ${index + 1}`}
+                    >
+                      {picked[index]?.token ?? ""}
+                    </button>
+                  ))}
+                </div>
+                <div className={activity.kind === "paragraph-builder" ? styles.paragraphTiles : styles.tileGrid}>
+                  {(activity.tiles ?? []).map((token, index) => {
+                    const used = picked.some((item) => item.index === index);
+                    const hinted = hintToken === token && !used;
+                    return (
+                      <button
+                        type="button"
+                        key={`${token}-${index}`}
+                        className={hinted ? `${styles.tile} ${styles.tileHinted}` : styles.tile}
+                        disabled={used}
+                        onClick={() => pickToken(token, index)}
+                      >
+                        {token}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
+            {activity.kind === "trace" && activity.target ? (
+              <TracePad letter={activity.target} onComplete={() => succeed(1)} />
+            ) : null}
+
+            {activity.kind === "read" ? (
+              <button type="button" className={styles.readCard} onClick={passiveComplete}>
+                <span className={styles.readText}>{activity.modelText}</span>
+                <span className={styles.readSupport}>{activity.supportText ?? "Tap to hear"}</span>
+              </button>
+            ) : null}
+
+            {activity.kind === "speak" ? (
+              <div className={styles.speakCard}>
+                <GuideCharacter mood={speaking ? "listening" : "happy"} className={styles.speakGuide} />
+                <button type="button" className={styles.modelSpeech} onClick={() => speak(activity.modelText ?? activity.spokenPrompt)}>
+                  <span aria-hidden="true">🔊</span>
+                  <strong>{activity.modelText}</strong>
                 </button>
-              );
-            })}
+                <button type="button" className={speaking ? `${styles.micButton} ${styles.micActive}` : styles.micButton} onClick={speakingTurn} disabled={speaking}>
+                  <span aria-hidden="true">●</span>
+                  {speaking ? "Speak now" : "Your turn"}
+                </button>
+                <span className={styles.speakNote}>No accent score</span>
+              </div>
+            ) : null}
           </div>
 
-          <div className={styles.feedback} data-success={Boolean(correctId)}>
-            {feedback || " "}
+          <div className={styles.feedback} data-success={feedback === "Great!" || feedback === "Nice speaking!"} aria-live="polite">
+            {feedback || activity.supportText || " "}
           </div>
         </section>
       </GameShell>
@@ -242,26 +423,75 @@ export function EnglishJourney() {
   }
 
   if (screen === "complete") {
-    const accuracy = Math.round((firstTryCorrect / STARTER_MISSION.length) * 100);
+    const accuracy = Math.round((firstTryCorrect / Math.max(1, activities.length)) * 100);
+    const nextLevel = ALL_LEVELS[ALL_LEVELS.findIndex((item) => item.id === level.id) + 1];
     return (
       <GameShell adventure gameTitle="English Journey">
         <section className={styles.complete}>
           <div className={styles.starBurst} aria-hidden="true">★ ✦ ★</div>
           <GuideCharacter mood="celebrating" className={styles.completeGuide} />
-          <p className={styles.eyebrow}>MISSION COMPLETE</p>
-          <h1>Amazing!</h1>
+          <p className={styles.eyebrow}>LEVEL COMPLETE</p>
+          <h1>{level.title}</h1>
           <div className={styles.completeStats}>
             <div><strong>{firstTryCorrect}</strong><span>First try</span></div>
             <div><strong>{accuracy}%</strong><span>Accuracy</span></div>
-            <div><strong>{totalAttempts}</strong><span>Taps</span></div>
+            <div><strong>★ {Math.max(1, firstTryCorrect)}</strong><span>Stars</span></div>
           </div>
-          <button type="button" className={styles.primaryButton} onClick={startMission}>
-            Play again
-          </button>
-          <button type="button" className={styles.secondaryButton} onClick={() => setScreen("home")}>
-            Journey map
+          {nextLevel ? (
+            <button type="button" className={styles.primaryButton} onClick={() => startLevel(nextLevel.id, nextLevel.world)}>
+              Next learning level
+            </button>
+          ) : null}
+          <button type="button" className={styles.secondaryButton} onClick={() => setScreen("levels")}>
+            Level map
           </button>
         </section>
+      </GameShell>
+    );
+  }
+
+  if (screen === "levels") {
+    return (
+      <GameShell adventure gameTitle="English Journey" soundEnabled={progress.soundEnabled} onToggleSound={toggleSound}>
+        <div className={styles.levelPage}>
+          <button type="button" className={styles.backText} onClick={() => setScreen("home")}>← Journey map</button>
+          <div className={styles.levelHero}>
+            <span className={styles.worldNumber}>{String(world.id).padStart(2, "0")}</span>
+            <div>
+              <p className={styles.eyebrow}>{world.stage}</p>
+              <h1>{world.title}</h1>
+              <p>{world.description}</p>
+            </div>
+          </div>
+          <div className={styles.levelGrid}>
+            {worldLevels.map((item, index) => {
+              const key = completionKey(item, worldId);
+              const done = progress.completedLevelIds.includes(key);
+              const letterLocked =
+                worldId === 1 &&
+                index > 0 &&
+                !progress.completedLevelIds.includes(LETTER_LEVELS[index - 1].id);
+              const writingLocked =
+                worldId === 2 &&
+                index > 0 &&
+                !progress.completedLevelIds.includes(LETTER_LEVELS[index - 1].id);
+              const locked = letterLocked || writingLocked;
+              return (
+                <button
+                  type="button"
+                  key={item.id}
+                  className={done ? `${styles.levelCard} ${styles.levelDone}` : styles.levelCard}
+                  disabled={locked}
+                  onClick={() => startLevel(item.id, worldId)}
+                >
+                  <span className={styles.levelCode}>{done ? "✓" : locked ? "•" : item.code}</span>
+                  <strong>{item.title}</strong>
+                  <span>{locked ? "Learn the step before" : item.subtitle}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </GameShell>
     );
   }
@@ -272,73 +502,66 @@ export function EnglishJourney() {
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>SKYLORA ENGLISH JOURNEY</p>
-            <h1>Play your way into English.</h1>
+            <h1>Learn English. One skill at a time.</h1>
+            <p className={styles.heroText}>Letters first. Then writing, sounds, words, speaking, reading, sentences and paragraphs.</p>
             <div className={styles.heroActions}>
-              <button type="button" className={styles.primaryButton} onClick={startMission}>
+              <button type="button" className={styles.primaryButton} onClick={() => startLevel(recommended.id, recommended.world)}>
                 <span aria-hidden="true">▶</span>
-                Start mission
+                Continue learning
               </button>
-              <Link className={styles.secondaryButton} href="/english-az-adventure">
-                A–Z game
-              </Link>
+              <button type="button" className={styles.secondaryButton} onClick={() => openWorld(1)}>
+                A–Z levels
+              </button>
             </div>
             <div className={styles.miniStats}>
               <span>★ {progress.stars}</span>
-              <span>{progress.completedMissions} missions</span>
-              <span>{masteredCount} discoveries</span>
+              <span>{progress.completedLevelIds.length} levels</span>
+              <span>{progress.masteredActivityIds.length} independent skills</span>
             </div>
           </div>
           <div className={styles.heroCharacter} aria-hidden="true">
-            <div className={styles.floatChip}>Aa</div>
-            <div className={styles.floatChip}>🔊</div>
-            <div className={styles.floatChip}>📖</div>
+            <div className={styles.floatChip}>A a</div>
+            <div className={styles.floatChip}>CAT</div>
+            <div className={styles.floatChip}>I am.</div>
             <GuideCharacter mood="happy" className={styles.guide} />
           </div>
         </section>
 
-        <section className={styles.mapSection} aria-labelledby="journey-map-title">
-          <div className={styles.sectionHead}>
-            <div>
-              <p className={styles.eyebrow}>YOUR ADVENTURE</p>
-              <h2 id="journey-map-title">English world map</h2>
-            </div>
-            {progress.bestAccuracy > 0 ? <span className={styles.best}>Best {progress.bestAccuracy}%</span> : null}
-          </div>
-
-          <div className={styles.worldMap}>
-            {JOURNEY_WORLDS.map((world, index) => (
-              <div
-                key={world.id}
-                className={[
-                  styles.worldNode,
-                  world.unlocked ? styles.worldUnlocked : styles.worldLocked,
-                  index % 2 ? styles.nodeRight : styles.nodeLeft,
-                ].join(" ")}
-              >
-                <span className={styles.worldStep}>{String(world.id).padStart(2, "0")}</span>
-                <div className={styles.worldIcon} aria-hidden="true">{world.unlocked ? world.icon : "🔒"}</div>
-                <div className={styles.worldText}>
-                  <strong>{world.title}</strong>
-                  <span>{world.unlocked ? "Ready" : "Coming next"}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+        <section className={styles.pathIntro}>
+          <p className={styles.eyebrow}>CONNECTED LEARNING PATH</p>
+          <h2>ABC → Write → Phonics → Words → Speak → Read → Paragraphs</h2>
         </section>
 
-        <section className={styles.missionCard}>
+        <section className={styles.worldGrid} aria-label="English learning worlds">
+          {JOURNEY_WORLDS.map((item) => {
+            const count = levelsForWorld(item.id).length;
+            const completed = levelsForWorld(item.id).filter((levelItem) =>
+              progress.completedLevelIds.includes(completionKey(levelItem, item.id)),
+            ).length;
+            return (
+              <button type="button" className={styles.worldCard} key={item.id} onClick={() => openWorld(item.id)}>
+                <span className={styles.worldIndex}>{String(item.id).padStart(2, "0")}</span>
+                <span className={styles.worldIcon} aria-hidden="true">{item.icon}</span>
+                <span className={styles.worldCopy}>
+                  <strong>{item.title}</strong>
+                  <small>{item.description}</small>
+                  <i>{completed}/{count} levels</i>
+                </span>
+              </button>
+            );
+          })}
+        </section>
+
+        <section className={styles.systemCard}>
           <div>
-            <p className={styles.eyebrow}>STARTER MISSION</p>
-            <h2>Listen → Words → Sounds → Letters → Phonics</h2>
+            <p className={styles.eyebrow}>INSIDE ONE JOURNEY</p>
+            <h2>A–Z Adventure is now the first learning world.</h2>
+            <p>No separate game jump. Letter learning, handwriting and later English skills share the same progress system.</p>
           </div>
-          <button type="button" className={styles.primaryButton} onClick={startMission}>
-            Play now
-          </button>
+          <button type="button" className={styles.primaryButton} onClick={() => openWorld(1)}>Start with A</button>
         </section>
 
-        {!storageAvailable ? (
-          <p className={styles.storageNote}>Progress saving is blocked in this browser. You can still play this visit.</p>
-        ) : null}
+        {!storageAvailable ? <p className={styles.storageNote}>Progress cannot be saved in this browser, but this visit still works.</p> : null}
       </div>
     </GameShell>
   );
