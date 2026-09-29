@@ -9,7 +9,9 @@ import {
   JOURNEY_WORLDS,
   LETTER_LEVELS,
   LEVEL_BY_ID,
+  TOTAL_JOURNEY_LEVELS,
   firstIncompleteLevel,
+  isLevelUnlocked,
   levelsForWorld,
 } from "../../lib/english-journey/content";
 import {
@@ -30,10 +32,6 @@ type PickedToken = { token: string; index: number };
 
 function emptyMetric(): SkillMetric {
   return { encounters: 0, firstTryCorrect: 0, attempts: 0, hints: 0 };
-}
-
-function completionKey(level: JourneyLevel, worldId: number) {
-  return worldId === 2 ? `writing:${level.id}` : level.id;
 }
 
 export function EnglishJourney() {
@@ -58,7 +56,10 @@ export function EnglishJourney() {
 
   const activity = activities[activityIndex];
   const world = JOURNEY_WORLDS.find((item) => item.id === worldId) ?? JOURNEY_WORLDS[0];
-  const recommended = useMemo(() => firstIncompleteLevel(progress.completedLevelIds), [progress.completedLevelIds]);
+  const recommended = useMemo(
+    () => firstIncompleteLevel(progress.completedLevelIds, progress.skillStats),
+    [progress.completedLevelIds, progress.skillStats],
+  );
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => setProgress(loadJourneyProgress()));
@@ -106,18 +107,14 @@ export function EnglishJourney() {
     lockRef.current = false;
   }
 
-  function activitiesFor(selected: JourneyLevel, selectedWorld: number) {
-    // Alphabet levels intentionally include their handwriting round so A–Z is one
-    // connected teaching session. Writing School reuses only the trace round.
-    if (selectedWorld === 1 && selected.id.startsWith("letter-")) return selected.activities;
-    const filtered = selected.activities.filter((item) => item.world === selectedWorld);
-    return filtered.length ? filtered : selected.activities;
+  function activitiesFor(selected: JourneyLevel) {
+    return selected.activities;
   }
 
   function startLevel(levelId: string, selectedWorld = LEVEL_BY_ID[levelId]?.world ?? 1) {
     const nextLevel = LEVEL_BY_ID[levelId];
     if (!nextLevel) return;
-    const nextActivities = activitiesFor(nextLevel, selectedWorld);
+    const nextActivities = activitiesFor(nextLevel);
     if (!nextActivities.length) return;
     if (timerRef.current !== null) window.clearTimeout(timerRef.current);
     setWorldId(selectedWorld);
@@ -166,7 +163,7 @@ export function EnglishJourney() {
 
   function finishLevel(baseProgress: JourneyProgress, correctFirst: number, attemptsMade: number) {
     const accuracy = Math.round((correctFirst / Math.max(1, activities.length)) * 100);
-    const key = completionKey(level, worldId);
+    const key = level.id;
     const next: JourneyProgress = {
       ...baseProgress,
       stars: baseProgress.stars + Math.max(1, correctFirst),
@@ -464,18 +461,9 @@ export function EnglishJourney() {
             </div>
           </div>
           <div className={styles.levelGrid}>
-            {worldLevels.map((item, index) => {
-              const key = completionKey(item, worldId);
-              const done = progress.completedLevelIds.includes(key);
-              const letterLocked =
-                worldId === 1 &&
-                index > 0 &&
-                !progress.completedLevelIds.includes(LETTER_LEVELS[index - 1].id);
-              const writingLocked =
-                worldId === 2 &&
-                index > 0 &&
-                !progress.completedLevelIds.includes(LETTER_LEVELS[index - 1].id);
-              const locked = letterLocked || writingLocked;
+            {worldLevels.map((item) => {
+              const done = progress.completedLevelIds.includes(item.id);
+              const locked = !done && !isLevelUnlocked(item, progress.completedLevelIds);
               return (
                 <button
                   type="button"
@@ -503,7 +491,7 @@ export function EnglishJourney() {
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>SKYLORA ENGLISH JOURNEY</p>
             <h1>Learn English. One skill at a time.</h1>
-            <p className={styles.heroText}>Letters first. Then writing, sounds, words, speaking, reading, sentences and paragraphs.</p>
+            <p className={styles.heroText}>250 connected levels: letters, writing, sounds, words, speaking, reading, sentences and paragraphs.</p>
             <div className={styles.heroActions}>
               <button type="button" className={styles.primaryButton} onClick={() => startLevel(recommended.id, recommended.world)}>
                 <span aria-hidden="true">▶</span>
@@ -515,7 +503,7 @@ export function EnglishJourney() {
             </div>
             <div className={styles.miniStats}>
               <span>★ {progress.stars}</span>
-              <span>{progress.completedLevelIds.length} levels</span>
+              <span>{progress.completedLevelIds.length}/{TOTAL_JOURNEY_LEVELS} levels</span>
               <span>{progress.masteredActivityIds.length} independent skills</span>
             </div>
           </div>
@@ -536,7 +524,7 @@ export function EnglishJourney() {
           {JOURNEY_WORLDS.map((item) => {
             const count = levelsForWorld(item.id).length;
             const completed = levelsForWorld(item.id).filter((levelItem) =>
-              progress.completedLevelIds.includes(completionKey(levelItem, item.id)),
+              progress.completedLevelIds.includes(levelItem.id),
             ).length;
             return (
               <button type="button" className={styles.worldCard} key={item.id} onClick={() => openWorld(item.id)}>
