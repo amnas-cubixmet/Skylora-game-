@@ -46,6 +46,16 @@ export function GameLibrary() {
           : "Six places to discover",
     },
     {
+      href: "/maths-journey",
+      icon: "123",
+      category: "Maths · Full Journey",
+      title: "Maths Journey",
+      copy: "One connected adventure from quantity and counting to practical everyday maths.",
+      label: "Start Maths Journey",
+      locked: false,
+      progress: "",
+    },
+    {
       href: "/number-hunt",
       icon: "123",
       category: "Maths adventure",
