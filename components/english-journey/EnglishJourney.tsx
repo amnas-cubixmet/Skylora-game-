@@ -414,7 +414,7 @@ export function EnglishJourney() {
             ) : null}
           </div>
 
-          <div className={styles.feedback} data-success={Boolean(correctId) || lockRef.current} aria-live="polite">
+          <div className={styles.feedback} data-success={feedback === "Great!" || feedback === "Nice speaking!"} aria-live="polite">
             {feedback || activity.supportText || " "}
           </div>
         </section>
