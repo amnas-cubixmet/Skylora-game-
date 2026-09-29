@@ -22,6 +22,16 @@ export function GameLibrary() {
 
   const games = [
     {
+      href: "/english-journey",
+      icon: "Aa",
+      category: "English · Full Journey",
+      title: "English Journey",
+      copy: "One connected adventure for listening, words, sounds, letters, phonics, stories and writing.",
+      label: "Start English Journey",
+      locked: false,
+      progress: "",
+    },
+    {
       href: "/english-az-adventure",
       icon: "Aa",
       category: "English · Game 01",
