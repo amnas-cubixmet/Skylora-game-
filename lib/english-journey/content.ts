@@ -441,7 +441,7 @@ const firstPrerequisites: Record<number, string[]> = {
   9: ["word-20-chip"],
   10: ["sentence-08"],
   11: ["reading-06"],
-  12: ["rhyme-cat"],
+  12: ["story-04"],
   13: ["reading-12"],
   14: ["comprehension-school"],
   15: ["paragraph-my-dog"],
