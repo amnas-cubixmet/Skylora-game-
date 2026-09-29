@@ -54,6 +54,9 @@ export type JourneyLevel = {
   title: string;
   subtitle: string;
   stage: JourneyStage;
+  globalNumber: number;
+  prerequisiteIds: string[];
+  reviewTags: string[];
   activities: JourneyActivity[];
 };
 
@@ -65,6 +68,7 @@ export type JourneyWorld = {
   icon: string;
   stage: JourneyStage;
   description: string;
+  levelCount: number;
 };
 
 export type SkillMetric = {
@@ -75,7 +79,7 @@ export type SkillMetric = {
 };
 
 export type JourneyProgress = {
-  version: 2;
+  version: 3;
   stars: number;
   completedMissions: number;
   bestAccuracy: number;
